@@ -22,6 +22,7 @@ namespace VMVC
         private const string V = "VMVC.exe", V1 = "Segoe UI";
         private static string normal = "Normal", ra = "Ra", megafon = "Megafon", overlay = "Overlay";
         public static Button[] Buttons = new Button[4];
+        public static Label[] BtLabels = new Label[4];
         public static bool Overlay_Button_Clicked = false;
 
         public static Overlay Overlay = null;
@@ -261,12 +262,40 @@ namespace VMVC
             TextField2();
             CreateSwitch();
             TrackBar();
-            Button(0, normal, 30, 30, normal_Click);
-            Button(1, ra, 30, 72, ra_Click);
-            Button(2, megafon, 30, 114, mega_Click);
-            Button(3, overlay, 30, 156, OverlayB_Click);
-            
+
+            Button(0, normal, 31, 31, normal_Click);
+            Button(1, ra, 31, 73, ra_Click);
+            Button(2, megafon, 31, 115, mega_Click);
+            Button(3, overlay, 31, 157, OverlayB_Click);
+
+            Label(0, 30, 30);
+            Label(1, 30, 72);
+            Label(2, 30, 114);
+            Label(3, 30, 156);
+
             Buttons[3].Enabled = false;
+        }
+
+        public void Label(int i, int LocationX, int LocationY)
+        {
+            try
+            {
+                BtLabels[i] = new Label
+                {
+                    Size = new Size(150, 40),
+                    Location = new Point(LocationX, LocationY),
+                    Font = new Font(V1, 12),
+                    BackColor = Color.FromArgb(100, 100, 100),
+                    FlatStyle = FlatStyle.Flat
+                };
+                BtLabels[i].TabStop = false;
+
+                this.Controls.Add(BtLabels[i]);
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
+            }
         }
 
         public void Button(int i, string Name, int LocationX, int LocationY, EventHandler Click)
@@ -275,7 +304,7 @@ namespace VMVC
             {
                 Buttons[i] = new Button
                 {
-                    Size = new Size(150, 40),
+                    Size = new Size(148, 38),
                     Location = new Point(LocationX, LocationY),
                     Text = Name,
                     Font = new Font(V1, 12),
