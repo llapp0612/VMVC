@@ -20,6 +20,7 @@ namespace VMVC
     public partial class VMVC : Form
     {
         private const string V = "VMVC.exe", V1 = "Segoe UI";
+        private static string normal = "Normal", ra = "Ra", megafon = "Megafon", overlay = "Overlay";
         public static Button[] Buttons = new Button[4];
         public static bool Overlay_Button_Clicked = false;
 
@@ -86,8 +87,6 @@ namespace VMVC
             Overlay.sDXThread();
             Overlay2.sDXThread();
         }
-
-        private static string normal = "Normal", ra = "Ra", megafon = "Megafon", overlay = "Overlay";
 
         public VMVC()
         {
@@ -204,7 +203,6 @@ namespace VMVC
             CantabileFile.StartInfo.FileName = Application.StartupPath + @"\" + V;
             CantabileFile.StartInfo.CreateNoWindow = true;
             CantabileFile.Start();
-            //this.Close();
             Environment.Exit(0);
         }
 
@@ -266,7 +264,7 @@ namespace VMVC
             Button(0, normal, 30, 30, normal_Click);
             Button(1, ra, 30, 72, ra_Click);
             Button(2, megafon, 30, 114, mega_Click);
-            Button(3, overlay, 30, 156, OverlayB_Click);//153
+            Button(3, overlay, 30, 156, OverlayB_Click);
             
             Buttons[3].Enabled = false;
         }
@@ -639,8 +637,6 @@ namespace VMVC
             this.trackBar1.Enabled = false;
             TheTimer();
             RunKB();
-
-            //Key.D0 = Keys.CapsLock;
         }
 
         public static bool SwitchState = false;
