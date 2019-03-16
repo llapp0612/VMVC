@@ -113,7 +113,7 @@ namespace VMVC
             SetWindowLong(this.Handle, -20, initialStyle | 0x80000 | 0x20);
             SetWindowPos(this.Handle, HWND_TOPMOST, 5, 5, 0, 0, 0);
 
-            SetRegion(180, 370);
+            SetRegion(180, 385);
             this.Show();
 
             OnResize(null);
@@ -139,7 +139,7 @@ namespace VMVC
         {
             this.DoubleBuffered = true;
             this.Width = 180;// set your own size
-            this.Height = 370;
+            this.Height = 385;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer |// this reduce the flicker
                 ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.DoubleBuffer |
@@ -160,7 +160,7 @@ namespace VMVC
             renderProperties = new HwndRenderTargetProperties()
             {
                 Hwnd = this.Handle,
-                PixelSize = new Size2(180, 370),
+                PixelSize = new Size2(180, 385),
                 PresentOptions = PresentOptions.None
             };
 
@@ -277,7 +277,7 @@ namespace VMVC
                 device.DrawText(vText, font, rect, brush2);
                 device.DrawText(vText, font1, rect, brush);
 
-                rect = new RectangleF(20, 335, this.Width, this.Height);
+                rect = new RectangleF(20, 350, this.Width, this.Height);
                 if (VMVC._CapsLockPressed)
                 {
                     device.DrawText("Aktiver Funk", font, rect, brush2);
@@ -287,6 +287,25 @@ namespace VMVC
                 {
                     device.DrawText("Inaktiver Funk", font, rect, brush2);
                     device.DrawText("Inaktiver Funk", font1, rect, brush5);
+                }
+
+                var MacVal = "Aus";
+                if(VMVC._Macro)
+                {
+                    MacVal = "An";
+                }
+
+                var MacTx = "Macros: " + MacVal;
+                rect = new RectangleF(20, 335, this.Width, this.Height);
+                if (VMVC._Macro)
+                {
+                    device.DrawText(MacTx, font, rect, brush2);
+                    device.DrawText(MacTx, font1, rect, brush4);
+                }
+                else
+                {
+                    device.DrawText(MacTx, font, rect, brush2);
+                    device.DrawText(MacTx, font1, rect, brush5);
                 }
 
                 device.Flush();

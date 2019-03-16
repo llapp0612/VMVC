@@ -29,6 +29,7 @@ namespace VMVC
         public static Overlay2 Overlay2 = null;
         public static Overlay3 Overlay3 = null;
         public static TextBox TB, TB2, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8, switch9, switch10;
+        public static TextBox TB3, TB4, switch11, switch12, switch13, switch14, switch15, switch16, switch17, switch18, switch19, switch20;
         public static Label lb3, lb4;
 
         Process[] processes;
@@ -38,10 +39,10 @@ namespace VMVC
         private static int overlayIsActivated = 1;
         public static bool _Hooked = false;
 
-        int swi = 0;
+        int swi = 0, swi2 = 0;
         bool isRunning = true;
         public Thread TH = null;
-        bool cap = false;
+        public static bool _KEYSEND = false, _Macro = false, _caps = false, _add = false;
         public TimeSpan grt;
         public static double ic = 0.000;
 
@@ -172,6 +173,7 @@ namespace VMVC
             {
                 //MessageBox.Show("GTA5 is not running!");
             }
+
         }
 
         public void GameOverlays()
@@ -261,6 +263,7 @@ namespace VMVC
             TextField();
             TextField2();
             CreateSwitch();
+            CreateSwitch2();
             TrackBar();
 
             Button(0, normal, 31, 31, normal_Click);
@@ -286,7 +289,7 @@ namespace VMVC
                     Location = new Point(LocationX, LocationY),
                     Font = new Font(V1, 12),
                     BackColor = Color.FromArgb(100, 100, 100),
-                    FlatStyle = FlatStyle.Flat
+                    //FlatStyle = FlatStyle.Flat
                 };
                 BtLabels[i].TabStop = false;
 
@@ -311,10 +314,10 @@ namespace VMVC
                     BackColor = Color.FromArgb(74, 74, 74),
                     FlatStyle = FlatStyle.Flat
                 };
-                //Buttons[i].FlatAppearance.BorderColor = Color.FromArgb(180, 65, 65, 65);
                 Buttons[i].FlatAppearance.BorderSize = 0;
-                Buttons[i].TabStop = false;
+                Buttons[i].TabStop = true;
                 Buttons[i].ForeColor = Color.FromArgb(255, 255, 255);
+                Buttons[i].FlatAppearance.CheckedBackColor = Color.FromArgb(0, 0, 0);
                 this.Controls.Add(Buttons[i]);
                 Buttons[i].Click += new EventHandler(Click);
             }
@@ -324,11 +327,19 @@ namespace VMVC
             }
         }
 
+        public void lb3_Click(object sender, EventArgs e)
+        {
+            if (!Convert.ToBoolean(this.trackBar1.Value))
+            {
+                TurnOn();
+            }
+        }
+
         public void TextField()
         {
             lb3 = new Label();
             lb3.Size = new Size(150, 30);
-            lb3.Location = new Point(32, 236);
+            lb3.Location = new Point(32, 214);
             lb3.BackColor = Color.FromArgb(74, 74, 74);
             lb3.ForeColor = Color.FromArgb(255, 255, 255);
             lb3.Font = new Font("Segoe UI", 9.2f);
@@ -336,11 +347,12 @@ namespace VMVC
             lb3.Width = 146;
             lb3.Height = 23;
             lb3.Text = "Keyboard not Hooked";
+            lb3.Click += lb3_Click;
             this.Controls.Add(lb3);
 
             TB = new TextBox();
             TB.Size = new Size(150, 30);
-            TB.Location = new Point(31, 235);
+            TB.Location = new Point(31, 213);
             TB.BackColor = Color.FromArgb(74, 74, 74);
             TB.TabStop = false;
             TB.ForeColor = Color.FromArgb(255, 255, 255);
@@ -368,7 +380,7 @@ namespace VMVC
         {
             lb4 = new Label();
             lb4.Size = new Size(150, 30);
-            lb4.Location = new Point(32, 264);
+            lb4.Location = new Point(32, 242);
             lb4.BackColor = Color.FromArgb(74, 74, 74);
             lb4.ForeColor = Color.FromArgb(255, 255, 255);
             lb4.Font = new Font("Segoe UI", 9.2f);
@@ -381,7 +393,7 @@ namespace VMVC
 
             TB2 = new TextBox();
             TB2.Size = new Size(150, 30);
-            TB2.Location = new Point(31, 263);
+            TB2.Location = new Point(31, 241);
             TB2.BackColor = Color.FromArgb(74, 74, 74);
             TB2.TabStop = false;
             TB2.ForeColor = Color.FromArgb(255, 255, 255);
@@ -407,7 +419,7 @@ namespace VMVC
             switch5.ReadOnly = true;
             switch5.Width = 55;
             switch5.Height = 20;
-            switch5.Location = new Point(42, 297);
+            switch5.Location = new Point(42, 275);
             switch5.TabStop = false;
             switch5.Enabled = false;
             switch5.BorderStyle = BorderStyle.None;
@@ -422,7 +434,7 @@ namespace VMVC
             switch6.ReadOnly = true;
             switch6.Width = 55;
             switch6.Height = 20;
-            switch6.Location = new Point(42, 300);
+            switch6.Location = new Point(42, 278);
             switch6.TabStop = false;
             switch6.Enabled = false;
             switch6.BorderStyle = BorderStyle.None;
@@ -437,7 +449,7 @@ namespace VMVC
             switch7.ReadOnly = true;
             switch7.Width = 55;
             switch7.Height = 20;
-            switch7.Location = new Point(42, 303);
+            switch7.Location = new Point(42, 281);
             switch7.TabStop = false;
             switch7.Enabled = false;
             switch7.BorderStyle = BorderStyle.None;
@@ -453,7 +465,7 @@ namespace VMVC
             switch3.ReadOnly = true;
             switch3.Width = 74;
             switch3.Height = 20;
-            switch3.Location = new Point(32, 292);
+            switch3.Location = new Point(32, 270);
             switch3.TabStop = false;
             switch3.Enabled = false;
             switch3.BorderStyle = BorderStyle.None;
@@ -469,7 +481,7 @@ namespace VMVC
             switch10.ReadOnly = true;
             switch10.Width = 76;
             switch10.Height = 20;
-            switch10.Location = new Point(31, 292);
+            switch10.Location = new Point(31, 270);
             switch10.TabStop = false;
             switch10.Enabled = false;
             switch10.BorderStyle = BorderStyle.None;
@@ -477,7 +489,7 @@ namespace VMVC
 
             Label lb1 = new Label();
             lb1.Visible = true;
-            lb1.Location = new Point(55, 292);
+            lb1.Location = new Point(55, 270);
             lb1.BackColor = Color.FromArgb(60, 198, 73);
             lb1.Font = new Font("Segoe UI", 9.5f);
             lb1.Text = "ON";
@@ -495,7 +507,7 @@ namespace VMVC
             switch1.ReadOnly = true;
             switch1.Width = 74;
             switch1.Height = 20;
-            switch1.Location = new Point(32, 292);
+            switch1.Location = new Point(32, 270);
             switch1.TabStop = false;
             switch1.Enabled = false;
             switch1.ForeColor = Color.White;
@@ -504,7 +516,7 @@ namespace VMVC
 
             Label lb2 = new Label();
             lb2.Visible = true;
-            lb2.Location = new Point(128, 292);
+            lb2.Location = new Point(128, 270);
             lb2.BackColor = Color.FromArgb(198, 60, 60);
             lb2.Font = new Font("Segoe UI", 9.5f);
             lb2.Text = "OFF";
@@ -520,10 +532,9 @@ namespace VMVC
             switch2.Text = "";
             switch2.Font = new Font("Segoe UI", 10);
             switch2.TextAlign = HorizontalAlignment.Center;
-            //switch2.ReadOnly = true;
             switch2.Width = 74;
             switch2.Height = 20;
-            switch2.Location = new Point(104, 292);
+            switch2.Location = new Point(104, 270);
             switch2.TabStop = false;
             switch2.Enabled = false;
             switch2.BorderStyle = BorderStyle.None;
@@ -536,14 +547,161 @@ namespace VMVC
             switch4.Name = "BackSwitchFrame";
             switch4.Font = new Font("Segoe UI", 11);
             switch4.TextAlign = HorizontalAlignment.Center;
-            //switch2.ReadOnly = true;
             switch4.Width = 148;
             switch4.Height = 20;
-            switch4.Location = new Point(31, 291);
+            switch4.Location = new Point(31, 269);
             switch4.TabStop = false;
             switch4.Enabled = false;
             switch4.BorderStyle = BorderStyle.None;
             this.Controls.Add(switch4);
+        }
+
+        public void CreateSwitch2()
+        {
+            switch15 = new TextBox();
+            switch15.BackColor = Color.FromArgb(50, 50, 50);
+            switch15.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch15.Name = "SwitchButtonStripe1";
+            switch15.Font = new Font("Segoe UI", 0.5f);
+            switch15.TextAlign = HorizontalAlignment.Center;
+            switch15.ReadOnly = true;
+            switch15.Width = 55;
+            switch15.Height = 20;
+            switch15.Location = new Point(42, 297);
+            switch15.TabStop = false;
+            switch15.Enabled = false;
+            switch15.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch15);
+
+            switch16 = new TextBox();
+            switch16.BackColor = Color.FromArgb(50, 50, 50);
+            switch16.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch16.Name = "SwitchButtonStripe2";
+            switch16.Font = new Font("Segoe UI", 0.5f);
+            switch16.TextAlign = HorizontalAlignment.Center;
+            switch16.ReadOnly = true;
+            switch16.Width = 55;
+            switch16.Height = 20;
+            switch16.Location = new Point(42, 300);
+            switch16.TabStop = false;
+            switch16.Enabled = false;
+            switch16.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch16);
+
+            switch17 = new TextBox();
+            switch17.BackColor = Color.FromArgb(50, 50, 50);
+            switch17.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch17.Name = "SwitchButtonStripe2";
+            switch17.Font = new Font("Segoe UI", 0.5f);
+            switch17.TextAlign = HorizontalAlignment.Center;
+            switch17.ReadOnly = true;
+            switch17.Width = 55;
+            switch17.Height = 20;
+            switch17.Location = new Point(42, 303);
+            switch17.TabStop = false;
+            switch17.Enabled = false;
+            switch17.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch17);
+
+            switch13 = new TextBox();
+            switch13.BackColor = Color.FromArgb(30, 30, 30);
+            switch13.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch13.Name = "SwitchButton";
+            switch13.Text = "";
+            switch13.Font = new Font("Segoe UI", 10);
+            switch13.TextAlign = HorizontalAlignment.Center;
+            switch13.ReadOnly = true;
+            switch13.Width = 74;
+            switch13.Height = 20;
+            switch13.Location = new Point(32, 292);
+            switch13.TabStop = false;
+            switch13.Enabled = false;
+            switch13.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch13);
+
+            switch20 = new TextBox();
+            switch20.BackColor = Color.FromArgb(60, 60, 60);
+            switch20.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch20.Name = "SwitchButtonSideFrame";
+            switch20.Text = "";
+            switch20.Font = new Font("Segoe UI", 10);
+            switch20.TextAlign = HorizontalAlignment.Center;
+            switch20.ReadOnly = true;
+            switch20.Width = 76;
+            switch20.Height = 20;
+            switch20.Location = new Point(31, 292);
+            switch20.TabStop = false;
+            switch20.Enabled = false;
+            switch20.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch20);
+
+            Label lb5 = new Label();
+            lb5.Visible = true;
+            lb5.Location = new Point(55, 292);
+            lb5.BackColor = Color.FromArgb(60, 198, 73);
+            lb5.Font = new Font("Segoe UI", 9.5f);
+            lb5.Text = "ON";
+            lb5.Width = 30;
+            lb5.Height = 18;
+            this.Controls.Add(lb5);
+
+            switch11 = new TextBox();
+            switch11.BackColor = Color.FromArgb(60, 198, 73);
+            switch11.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch11.Name = "On";
+            switch11.Text = "ON";
+            switch11.Font = new Font("Segoe UI", 10);
+            switch11.TextAlign = HorizontalAlignment.Center;
+            switch11.ReadOnly = true;
+            switch11.Width = 74;
+            switch11.Height = 20;
+            switch11.Location = new Point(32, 292);
+            switch11.TabStop = false;
+            switch11.Enabled = false;
+            switch11.ForeColor = Color.White;
+            switch11.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch11);
+
+            Label lb6 = new Label();
+            lb6.Visible = true;
+            lb6.Location = new Point(128, 292);
+            lb6.BackColor = Color.FromArgb(198, 60, 60);
+            lb6.Font = new Font("Segoe UI", 9.5f);
+            lb6.Text = "OFF";
+            lb6.Width = 30;
+            lb6.Height = 18;
+            this.Controls.Add(lb6);
+
+            switch12 = new TextBox();
+            switch12.BackColor = Color.FromArgb(198, 60, 60);
+            switch12.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch12.ForeColor = Color.FromArgb(255, 255, 255);
+            switch12.Name = "Off";
+            switch12.Text = "";
+            switch12.Font = new Font("Segoe UI", 10);
+            switch12.TextAlign = HorizontalAlignment.Center;
+            switch12.Width = 74;
+            switch12.Height = 20;
+            switch12.Location = new Point(104, 292);
+            switch12.TabStop = false;
+            switch12.Enabled = false;
+            switch12.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch12);
+
+            switch14 = new TextBox();
+            switch14.BackColor = Color.FromArgb(60, 60, 60);
+            switch14.Cursor = System.Windows.Forms.Cursors.Arrow;
+            switch14.ForeColor = Color.FromArgb(255, 255, 255);
+            switch14.Name = "BackSwitchFrame";
+            switch14.Font = new Font("Segoe UI", 11);
+            switch14.TextAlign = HorizontalAlignment.Center;
+            switch14.Width = 148;
+            switch14.Height = 20;
+            switch14.Location = new Point(31, 291);
+            switch14.TabStop = false;
+            switch14.Enabled = false;
+            switch14.BorderStyle = BorderStyle.None;
+            this.Controls.Add(switch14);
         }
 
         public void MoveSwitch(bool SwitchState)
@@ -552,11 +710,11 @@ namespace VMVC
             {
                 while (swi < 73)
                 {
-                    switch3.Location = new Point(32 + swi, 292);
-                    switch5.Location = new Point(42 + swi, 297);
-                    switch6.Location = new Point(42 + swi, 300);
-                    switch7.Location = new Point(42 + swi, 303);
-                    switch10.Location = new Point(31 + swi, 292);
+                    switch3.Location = new Point(32 + swi, 270);
+                    switch5.Location = new Point(42 + swi, 275);
+                    switch6.Location = new Point(42 + swi, 278);
+                    switch7.Location = new Point(42 + swi, 281);
+                    switch10.Location = new Point(31 + swi, 270);
                     swi++;
                     Thread.Sleep(2);
                 }
@@ -565,15 +723,47 @@ namespace VMVC
             {
                 while (swi >= 0)
                 {
-                    switch3.Location = new Point(32 + swi, 292);
-                    switch5.Location = new Point(42 + swi, 297);
-                    switch6.Location = new Point(42 + swi, 300);
-                    switch7.Location = new Point(42 + swi, 303);
-                    switch10.Location = new Point(31 + swi, 292);
+                    switch3.Location = new Point(32 + swi, 270);
+                    switch5.Location = new Point(42 + swi, 275);
+                    switch6.Location = new Point(42 + swi, 278);
+                    switch7.Location = new Point(42 + swi, 281);
+                    switch10.Location = new Point(31 + swi, 270);
                     swi--;
                     Thread.Sleep(2);
                 }
             }
+        }
+
+        public void MoveSwitch2(bool SwitchState)
+        {
+            if (SwitchState)
+            {
+                while (swi2 < 73)
+                {
+                    switch13.Location = new Point(32 + swi2, 292);
+                    switch15.Location = new Point(42 + swi2, 297);
+                    switch16.Location = new Point(42 + swi2, 300);
+                    switch17.Location = new Point(42 + swi2, 303);
+                    switch20.Location = new Point(31 + swi2, 292);
+                    swi2++;
+                    Thread.Sleep(2);
+                }
+            }
+            else
+            {
+                while (swi2 >= 0)
+                {
+                    switch13.Location = new Point(32 + swi2, 292);
+                    switch15.Location = new Point(42 + swi2, 297);
+                    switch16.Location = new Point(42 + swi2, 300);
+                    switch17.Location = new Point(42 + swi2, 303);
+                    switch20.Location = new Point(31 + swi2, 292);
+                    swi2--;
+                    Thread.Sleep(2);
+                }
+            }
+
+            _Macro = SwitchState;
         }
 
         private void RunKB()
@@ -589,7 +779,8 @@ namespace VMVC
         {
             while (isRunning)
             {
-                Thread.Sleep(40);
+                Thread.Sleep(20);
+
                 if (this.trackBar1.Value == 1)
                 {
                     if ((Keyboard.GetKeyStates(Key.F12) & KeyStates.Down) > 0)
@@ -640,21 +831,64 @@ namespace VMVC
                         CapsLockPressed = false;
                     }
 
-                    if ((Keyboard.GetKeyStates(Key.D0) & KeyStates.Down) > 0)
+                    if ((Keyboard.GetKeyStates(Key.D0) & KeyStates.Toggled) > 0)
                     {
-                        if (!cap)
+                        if (!_caps && _Macro)
                         {
-                            //SendKeys.Send("{CAPSLOCK}");
-                            //SendKeys.SendWait("CAPSLOCK");
-                            cap = true;
+                            SendKeys.SendWait("CAPSLOCK");
                         }
-                        else if (cap)
+                    }
+                    else if ((Keyboard.GetKeyStates(Key.D0) & KeyStates.Down) > 0)
+                    {
+                        _caps = true;
+                    }
+                    else
+                    {
+                        if (_caps)
                         {
-                            //SendKeys.Send("{CAPSLOCK}");
-                            //SendKeys.SendWait("CAPSLOCK");
-                            cap = false;
+                            _caps = false;
+                            SendKeys.SendWait("CAPSLOCK");
                         }
-                        
+                    }
+
+                    if ((Keyboard.GetKeyStates(Key.D9) & KeyStates.Down) > 0)
+                    {
+                        if (!_KEYSEND && _Macro)
+                        {
+                            SendKeys.SendWait("P");
+                            _KEYSEND = true;
+                        }
+                    }
+                    else
+                    {
+                        if (_KEYSEND)
+                        {
+                            _KEYSEND = false;
+                        }
+                    }
+
+                    if ((Keyboard.GetKeyStates(Key.Add) & KeyStates.Down) > 0)
+                    {
+                        if (!_add)
+                        {
+                            _add = true;
+
+                            if (!_Macro)
+                            {
+                                MoveSwitch2(true);
+                            }
+                            else
+                            {
+                                MoveSwitch2(false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_add)
+                        {
+                            _add = false;
+                        }
                     }
                 }
             }
