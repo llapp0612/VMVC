@@ -32,6 +32,17 @@ namespace VMVC
         Process[] processes;
 
         private static int _ButtonState;
+        public static bool _CapsLockPressed = false;
+        private static int overlayIsActivated = 1;
+        public static bool _Hooked = false;
+
+        int swi = 0;
+        bool isRunning = true;
+        public Thread TH = null;
+        bool cap = false;
+        public TimeSpan grt;
+        public static double ic = 0.000;
+
         public static int ButtonState
         {
             get { return _ButtonState; }
@@ -48,7 +59,6 @@ namespace VMVC
             }
         }
 
-        public static bool _CapsLockPressed = false;
         public static bool CapsLockPressed
         {
             get { return _CapsLockPressed; }
@@ -77,7 +87,6 @@ namespace VMVC
             Overlay2.sDXThread();
         }
 
-        private static int overlayIsActivated = 1;
         private static string normal = "Normal", ra = "Ra", megafon = "Megafon", overlay = "Overlay";
 
         public VMVC()
@@ -175,7 +184,6 @@ namespace VMVC
             Overlay3.LoadDevice();
         }
 
-        public static bool _Hooked = false;
         public bool Hooked
         {
             get { return _Hooked; }
@@ -511,7 +519,6 @@ namespace VMVC
             this.Controls.Add(switch4);
         }
 
-        int swi = 0;
         public void MoveSwitch(bool SwitchState)
         {
             if (SwitchState)
@@ -542,8 +549,6 @@ namespace VMVC
             }
         }
 
-        bool isRunning = true;
-        public Thread TH = null;
         private void RunKB()
         {
             TH = new Thread(KB);
@@ -628,7 +633,6 @@ namespace VMVC
             }
         }
 
-        bool cap = false;
         public void TrackBar()
         {
             this.trackBar1.Value = 0;
@@ -649,7 +653,6 @@ namespace VMVC
             DetectTimer.Start();
         }
 
-        public TimeSpan grt;
         public void DetectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             using (var gta = Process.GetProcessesByName("Notepad").FirstOrDefault())
@@ -790,7 +793,6 @@ namespace VMVC
 
         }
 
-        public static double ic = 0.000;
         public static void OverlayFadeIn()
         {
             Overlay_Button_Clicked = true;
