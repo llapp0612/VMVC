@@ -835,7 +835,7 @@ namespace VMVC
                     {
                         if (!_caps && _Macro)
                         {
-                            SendKeys.SendWait("CAPSLOCK");
+                            //SendKeys.SendWait("CAPSLOCK");
                         }
                     }
                     else if ((Keyboard.GetKeyStates(Key.D0) & KeyStates.Down) > 0)
@@ -847,7 +847,7 @@ namespace VMVC
                         if (_caps)
                         {
                             _caps = false;
-                            SendKeys.SendWait("CAPSLOCK");
+                            //SendKeys.SendWait("CAPSLOCK");
                         }
                     }
 
@@ -855,7 +855,7 @@ namespace VMVC
                     {
                         if (!_KEYSEND && _Macro)
                         {
-                            SendKeys.SendWait("P");
+                            SendKeys.SendWait("F11");
                             _KEYSEND = true;
                         }
                     }
@@ -914,7 +914,7 @@ namespace VMVC
 
         public void DetectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            using (var gta = Process.GetProcessesByName("Notepad").FirstOrDefault())
+            using (var gta = Process.GetProcessesByName("GTA5").FirstOrDefault())
             {
                 if (gta != null)
                 {
