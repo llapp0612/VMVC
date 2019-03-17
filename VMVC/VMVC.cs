@@ -30,7 +30,7 @@ namespace VMVC
         public static Overlay3 Overlay3 = null;
         public static TextBox TB, TB2, switch1, switch2, switch3, switch4, switch5, switch6, switch7, switch8, switch9, switch10;
         public static TextBox TB3, TB4, switch11, switch12, switch13, switch14, switch15, switch16, switch17, switch18, switch19, switch20;
-        public static Label lb3, lb4;
+        public static Label lb3, lb4, lb7, lb8, lb9, lb10, lb17, lb18, lb19, lb20;
 
         Process[] processes;
 
@@ -410,66 +410,70 @@ namespace VMVC
 
         public void CreateSwitch()
         {
-            switch5 = new TextBox();
-            switch5.BackColor = Color.FromArgb(50, 50, 50);
-            switch5.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch5.Name = "SwitchButtonStripe1";
-            switch5.Font = new Font("Segoe UI", 0.5f);
-            switch5.TextAlign = HorizontalAlignment.Center;
-            switch5.ReadOnly = true;
-            switch5.Width = 55;
-            switch5.Height = 20;
-            switch5.Location = new Point(42, 275);
-            switch5.TabStop = false;
-            switch5.Enabled = false;
-            switch5.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch5);
+            lb8 = new Label();
+            lb8.BackColor = Color.FromArgb(50, 50, 50);
+            lb8.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb8.Name = "SwitchButtonStripe1";
+            lb8.Font = new Font("Segoe UI", 0.5f);
+            //lb8.TextAlign = HorizontalAlignment.Center;
+            //lb8.ReadOnly = true;
+            lb8.Width = 55;
+            lb8.Height = 1;
+            lb8.Location = new Point(42, 275);
+            lb8.TabStop = false;
+            //lb8.Enabled = false;
+            lb8.Click += lb3_Click;
+            lb8.BorderStyle = BorderStyle.None;
+            this.Controls.Add(lb8);
 
-            switch6 = new TextBox();
-            switch6.BackColor = Color.FromArgb(50, 50, 50);
-            switch6.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch6.Name = "SwitchButtonStripe2";
-            switch6.Font = new Font("Segoe UI", 0.5f);
-            switch6.TextAlign = HorizontalAlignment.Center;
-            switch6.ReadOnly = true;
-            switch6.Width = 55;
-            switch6.Height = 20;
-            switch6.Location = new Point(42, 278);
-            switch6.TabStop = false;
-            switch6.Enabled = false;
-            switch6.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch6);
+            lb9 = new Label();
+            lb9.BackColor = Color.FromArgb(50, 50, 50);
+            lb9.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb9.Name = "SwitchButtonStripe2";
+            lb9.Font = new Font("Segoe UI", 0.5f);
+            //lb9.TextAlign = HorizontalAlignment.Center;
+            //lb9.ReadOnly = true;
+            lb9.Width = 55;
+            lb9.Height = 1;
+            lb9.Location = new Point(42, 278);
+            lb9.TabStop = false;
+            //lb9.Enabled = false;
+            lb9.Click += lb3_Click;
+            lb9.BorderStyle = BorderStyle.None;
+            this.Controls.Add(lb9);
 
-            switch7 = new TextBox();
-            switch7.BackColor = Color.FromArgb(50, 50, 50);
-            switch7.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch7.Name = "SwitchButtonStripe2";
-            switch7.Font = new Font("Segoe UI", 0.5f);
-            switch7.TextAlign = HorizontalAlignment.Center;
-            switch7.ReadOnly = true;
-            switch7.Width = 55;
-            switch7.Height = 20;
-            switch7.Location = new Point(42, 281);
-            switch7.TabStop = false;
-            switch7.Enabled = false;
-            switch7.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch7);
+            lb10 = new Label();
+            lb10.BackColor = Color.FromArgb(50, 50, 50);
+            lb10.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb10.Name = "SwitchButtonStripe2";
+            lb10.Font = new Font("Segoe UI", 0.5f);
+            //lb10.TextAlign = HorizontalAlignment.Center;
+            //lb10.ReadOnly = true;
+            lb10.Width = 55;
+            lb10.Height = 1;
+            lb10.Location = new Point(42, 281);
+            lb10.TabStop = false;
+            //lb10.Enabled = false;
+            lb10.Click += lb3_Click;
+            lb10.BorderStyle = BorderStyle.None;
+            this.Controls.Add(lb10);
 
-            switch3 = new TextBox();
-            switch3.BackColor = Color.FromArgb(30, 30, 30);
-            switch3.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch3.Name = "SwitchButton";
-            switch3.Text = "";
-            switch3.Font = new Font("Segoe UI", 10);
-            switch3.TextAlign = HorizontalAlignment.Center;
-            switch3.ReadOnly = true;
-            switch3.Width = 74;
-            switch3.Height = 20;
-            switch3.Location = new Point(32, 270);
-            switch3.TabStop = false;
-            switch3.Enabled = false;
-            switch3.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch3);
+            lb7 = new Label();
+            lb7.BackColor = Color.FromArgb(30, 30, 30);
+            lb7.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb7.Name = "SwitchButton";
+            lb7.Text = "";
+            lb7.Font = new Font("Segoe UI", 9); //10
+            //lb7.TextAlign = HorizontalAlignment.Center;
+            //lb7.ReadOnly = true;
+            lb7.Width = 74;
+            lb7.Height = 18;
+            lb7.Location = new Point(32, 270);
+            lb7.TabStop = false;
+            //lb7.Enabled = false;
+            lb7.BorderStyle = BorderStyle.None;
+            lb7.Click += lb3_Click;
+            this.Controls.Add(lb7);
 
             switch10 = new TextBox();
             switch10.BackColor = Color.FromArgb(60, 60, 60);
@@ -489,56 +493,29 @@ namespace VMVC
 
             Label lb1 = new Label();
             lb1.Visible = true;
-            lb1.Location = new Point(55, 270);
+            lb1.Location = new Point(32, 270);
             lb1.BackColor = Color.FromArgb(60, 198, 73);
             lb1.Font = new Font("Segoe UI", 9.5f);
             lb1.Text = "ON";
-            lb1.Width = 30;
+            lb1.TextAlign = ContentAlignment.MiddleCenter;
+            lb1.TextAlign = ContentAlignment.TopCenter;
+            lb1.Width = 74;
             lb1.Height = 18;
+            lb1.Click += lb3_Click;
             this.Controls.Add(lb1);
-
-            switch1 = new TextBox();
-            switch1.BackColor = Color.FromArgb(60, 198, 73);
-            switch1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch1.Name = "On";
-            switch1.Text = "ON";
-            switch1.Font = new Font("Segoe UI", 10);
-            switch1.TextAlign = HorizontalAlignment.Center;
-            switch1.ReadOnly = true;
-            switch1.Width = 74;
-            switch1.Height = 20;
-            switch1.Location = new Point(32, 270);
-            switch1.TabStop = false;
-            switch1.Enabled = false;
-            switch1.ForeColor = Color.White;
-            switch1.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch1);
 
             Label lb2 = new Label();
             lb2.Visible = true;
-            lb2.Location = new Point(128, 270);
+            lb2.Location = new Point(104, 270);
             lb2.BackColor = Color.FromArgb(198, 60, 60);
             lb2.Font = new Font("Segoe UI", 9.5f);
             lb2.Text = "OFF";
-            lb2.Width = 30;
+            lb2.TextAlign = ContentAlignment.MiddleCenter;
+            lb2.TextAlign = ContentAlignment.TopCenter;
+            lb2.Width = 74;
             lb2.Height = 18;
+            lb2.Click += lb3_Click;
             this.Controls.Add(lb2);
-
-            switch2 = new TextBox();
-            switch2.BackColor = Color.FromArgb(198, 60, 60);
-            switch2.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch2.ForeColor = Color.FromArgb(255, 255, 255);
-            switch2.Name = "Off";
-            switch2.Text = "";
-            switch2.Font = new Font("Segoe UI", 10);
-            switch2.TextAlign = HorizontalAlignment.Center;
-            switch2.Width = 74;
-            switch2.Height = 20;
-            switch2.Location = new Point(104, 270);
-            switch2.TabStop = false;
-            switch2.Enabled = false;
-            switch2.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch2);
 
             switch4 = new TextBox();
             switch4.BackColor = Color.FromArgb(60, 60, 60);
@@ -556,68 +533,80 @@ namespace VMVC
             this.Controls.Add(switch4);
         }
 
+        private void lb18_Click(object sender, EventArgs e)
+        {
+            
+            MoveSwitch2(!_Macro);
+        }
+
         public void CreateSwitch2()
         {
-            switch15 = new TextBox();
-            switch15.BackColor = Color.FromArgb(50, 50, 50);
-            switch15.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch15.Name = "SwitchButtonStripe1";
-            switch15.Font = new Font("Segoe UI", 0.5f);
-            switch15.TextAlign = HorizontalAlignment.Center;
-            switch15.ReadOnly = true;
-            switch15.Width = 55;
-            switch15.Height = 20;
-            switch15.Location = new Point(42, 297);
-            switch15.TabStop = false;
-            switch15.Enabled = false;
-            switch15.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch15);
+            lb18 = new Label();
+            lb18.BackColor = Color.FromArgb(50, 50, 50);
+            lb18.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb18.Name = "SwitchButtonStripe1";
+            lb18.Font = new Font("Segoe UI", 0.5f);
+            //lb18.TextAlign = HorizontalAlignment.Center;
+            //lb18.ReadOnly = true;
+            lb18.Width = 55;
+            lb18.Height = 1;
+            lb18.Location = new Point(42, 297);
+            lb18.TabStop = false;
+            //lb18.Enabled = false;
+            lb18.BorderStyle = BorderStyle.None;
+            lb18.Click += lb18_Click;
+            this.Controls.Add(lb18);
 
-            switch16 = new TextBox();
-            switch16.BackColor = Color.FromArgb(50, 50, 50);
-            switch16.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch16.Name = "SwitchButtonStripe2";
-            switch16.Font = new Font("Segoe UI", 0.5f);
-            switch16.TextAlign = HorizontalAlignment.Center;
-            switch16.ReadOnly = true;
-            switch16.Width = 55;
-            switch16.Height = 20;
-            switch16.Location = new Point(42, 300);
-            switch16.TabStop = false;
-            switch16.Enabled = false;
-            switch16.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch16);
+            lb19 = new Label();
+            lb19.BackColor = Color.FromArgb(50, 50, 50);
+            lb19.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb19.Name = "SwitchButtonStripe2";
+            lb19.Font = new Font("Segoe UI", 0.5f);
+            //lb19.TextAlign = HorizontalAlignment.Center;
+            //lb19.ReadOnly = true;
+            lb19.Width = 55;
+            lb19.Height = 1;
+            lb19.Location = new Point(42, 300);
+            lb19.TabStop = false;
+            //lb19.Enabled = false;
+            lb19.BorderStyle = BorderStyle.None;
+            lb19.Click += lb18_Click;
+            this.Controls.Add(lb19);
 
-            switch17 = new TextBox();
-            switch17.BackColor = Color.FromArgb(50, 50, 50);
-            switch17.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch17.Name = "SwitchButtonStripe2";
-            switch17.Font = new Font("Segoe UI", 0.5f);
-            switch17.TextAlign = HorizontalAlignment.Center;
-            switch17.ReadOnly = true;
-            switch17.Width = 55;
-            switch17.Height = 20;
-            switch17.Location = new Point(42, 303);
-            switch17.TabStop = false;
-            switch17.Enabled = false;
-            switch17.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch17);
+            lb20 = new Label();
+            lb20.BackColor = Color.FromArgb(50, 50, 50);
+            lb20.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb20.Name = "SwitchButtonStripe2";
+            lb20.Font = new Font("Segoe UI", 0.5f);
+            //lb20.TextAlign = HorizontalAlignment.Center;
+            //lb20.ReadOnly = true;
+            lb20.Width = 55;
+            lb20.Height = 1;
+            lb20.Location = new Point(42, 303);
+            lb20.TabStop = false;
+            //lb20.Enabled = false;
+            lb20.BorderStyle = BorderStyle.None;
+            lb20.Click += lb18_Click;
+            this.Controls.Add(lb20);
 
-            switch13 = new TextBox();
-            switch13.BackColor = Color.FromArgb(30, 30, 30);
-            switch13.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch13.Name = "SwitchButton";
-            switch13.Text = "";
-            switch13.Font = new Font("Segoe UI", 10);
-            switch13.TextAlign = HorizontalAlignment.Center;
-            switch13.ReadOnly = true;
-            switch13.Width = 74;
-            switch13.Height = 20;
-            switch13.Location = new Point(32, 292);
-            switch13.TabStop = false;
-            switch13.Enabled = false;
-            switch13.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch13);
+            lb17 = new Label();
+            lb17.BackColor = Color.FromArgb(30, 30, 30);
+            lb17.Cursor = System.Windows.Forms.Cursors.Arrow;
+            lb17.Name = "SwitchButton";
+            lb17.Text = "";
+            lb17.Font = new Font("Segoe UI", 9);
+            //lb17.TextAlign = HorizontalAlignment.Center;
+            //lb17.ReadOnly = true;
+            lb17.Width = 74;
+            lb17.Height = 18;
+            lb17.Location = new Point(32, 292);
+            lb17.TabStop = false;
+            lb17.TabIndex = 0;
+            //lb17.Enabled = false;
+            lb17.BorderStyle = BorderStyle.None;
+            lb17.Click += lb18_Click;
+            //lb17.Parent = switch11;
+            this.Controls.Add(lb17);
 
             switch20 = new TextBox();
             switch20.BackColor = Color.FromArgb(60, 60, 60);
@@ -637,56 +626,29 @@ namespace VMVC
 
             Label lb5 = new Label();
             lb5.Visible = true;
-            lb5.Location = new Point(55, 292);
+            lb5.Location = new Point(32, 292);
             lb5.BackColor = Color.FromArgb(60, 198, 73);
             lb5.Font = new Font("Segoe UI", 9.5f);
             lb5.Text = "ON";
-            lb5.Width = 30;
+            lb5.TextAlign = ContentAlignment.MiddleCenter;
+            lb5.TextAlign = ContentAlignment.TopCenter;
+            lb5.Width = 74;
             lb5.Height = 18;
+            lb5.Click += lb18_Click;
             this.Controls.Add(lb5);
-
-            switch11 = new TextBox();
-            switch11.BackColor = Color.FromArgb(60, 198, 73);
-            switch11.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch11.Name = "On";
-            switch11.Text = "ON";
-            switch11.Font = new Font("Segoe UI", 10);
-            switch11.TextAlign = HorizontalAlignment.Center;
-            switch11.ReadOnly = true;
-            switch11.Width = 74;
-            switch11.Height = 20;
-            switch11.Location = new Point(32, 292);
-            switch11.TabStop = false;
-            switch11.Enabled = false;
-            switch11.ForeColor = Color.White;
-            switch11.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch11);
 
             Label lb6 = new Label();
             lb6.Visible = true;
-            lb6.Location = new Point(128, 292);
+            lb6.Location = new Point(104, 292);
             lb6.BackColor = Color.FromArgb(198, 60, 60);
             lb6.Font = new Font("Segoe UI", 9.5f);
             lb6.Text = "OFF";
-            lb6.Width = 30;
+            lb6.TextAlign = ContentAlignment.MiddleCenter;
+            lb6.TextAlign = ContentAlignment.TopCenter;
+            lb6.Width = 74;
             lb6.Height = 18;
+            lb6.Click += lb18_Click;
             this.Controls.Add(lb6);
-
-            switch12 = new TextBox();
-            switch12.BackColor = Color.FromArgb(198, 60, 60);
-            switch12.Cursor = System.Windows.Forms.Cursors.Arrow;
-            switch12.ForeColor = Color.FromArgb(255, 255, 255);
-            switch12.Name = "Off";
-            switch12.Text = "";
-            switch12.Font = new Font("Segoe UI", 10);
-            switch12.TextAlign = HorizontalAlignment.Center;
-            switch12.Width = 74;
-            switch12.Height = 20;
-            switch12.Location = new Point(104, 292);
-            switch12.TabStop = false;
-            switch12.Enabled = false;
-            switch12.BorderStyle = BorderStyle.None;
-            this.Controls.Add(switch12);
 
             switch14 = new TextBox();
             switch14.BackColor = Color.FromArgb(60, 60, 60);
@@ -704,66 +666,74 @@ namespace VMVC
             this.Controls.Add(switch14);
         }
 
-        public void MoveSwitch(bool SwitchState)
+        public async void MoveSwitch(bool SwitchState)
         {
-            if (SwitchState)
+            await Task.Run(() =>
             {
-                while (swi < 73)
+                if (SwitchState)
                 {
-                    switch3.Location = new Point(32 + swi, 270);
-                    switch5.Location = new Point(42 + swi, 275);
-                    switch6.Location = new Point(42 + swi, 278);
-                    switch7.Location = new Point(42 + swi, 281);
-                    switch10.Location = new Point(31 + swi, 270);
-                    swi++;
-                    Thread.Sleep(2);
+                    while (swi < 73)
+                    {
+                        lb7.Location = new Point(32 + swi, 270);
+                        lb8.Location = new Point(42 + swi, 275);
+                        lb9.Location = new Point(42 + swi, 278);
+                        lb10.Location = new Point(42 + swi, 281);
+                        switch10.Location = new Point(31 + swi, 270);
+                        swi++;
+                        Thread.Sleep(2);
+                    }
                 }
-            }
-            else
-            {
-                while (swi >= 0)
+                else
                 {
-                    switch3.Location = new Point(32 + swi, 270);
-                    switch5.Location = new Point(42 + swi, 275);
-                    switch6.Location = new Point(42 + swi, 278);
-                    switch7.Location = new Point(42 + swi, 281);
-                    switch10.Location = new Point(31 + swi, 270);
-                    swi--;
-                    Thread.Sleep(2);
+                    while (swi >= 0)
+                    {
+                        lb7.Location = new Point(32 + swi, 270);
+                        lb8.Location = new Point(42 + swi, 275);
+                        lb9.Location = new Point(42 + swi, 278);
+                        lb10.Location = new Point(42 + swi, 281);
+                        switch10.Location = new Point(31 + swi, 270);
+                        swi--;
+                        Thread.Sleep(2);
+                    }
                 }
-            }
+            });
         }
 
-        public void MoveSwitch2(bool SwitchState)
+        public async void MoveSwitch2(bool SwitchState)
         {
-            if (SwitchState)
+            await Task.Run(() =>
             {
-                while (swi2 < 73)
+                if (SwitchState)
                 {
-                    switch13.Location = new Point(32 + swi2, 292);
-                    switch15.Location = new Point(42 + swi2, 297);
-                    switch16.Location = new Point(42 + swi2, 300);
-                    switch17.Location = new Point(42 + swi2, 303);
-                    switch20.Location = new Point(31 + swi2, 292);
-                    swi2++;
-                    Thread.Sleep(2);
+                    while (swi2 < 73)
+                    {
+                        lb17.Location = new Point(32 + swi2, 292);
+                        lb18.Location = new Point(42 + swi2, 297);
+                        lb19.Location = new Point(42 + swi2, 300);
+                        lb20.Location = new Point(42 + swi2, 303);
+                        switch20.Location = new Point(31 + swi2, 292);
+                        lb20.Width = 55;
+                        swi2++;
+                        Thread.Sleep(2);
+                    }
                 }
-            }
-            else
-            {
-                while (swi2 >= 0)
+                else
                 {
-                    switch13.Location = new Point(32 + swi2, 292);
-                    switch15.Location = new Point(42 + swi2, 297);
-                    switch16.Location = new Point(42 + swi2, 300);
-                    switch17.Location = new Point(42 + swi2, 303);
-                    switch20.Location = new Point(31 + swi2, 292);
-                    swi2--;
-                    Thread.Sleep(2);
+                    while (swi2 >= 0)
+                    {
+                        lb17.Location = new Point(32 + swi2, 292);
+                        lb18.Location = new Point(42 + swi2, 297);
+                        lb19.Location = new Point(42 + swi2, 300);
+                        lb20.Location = new Point(42 + swi2, 303);
+                        switch20.Location = new Point(31 + swi2, 292);
+                        lb20.Width = 55;
+                        swi2--;
+                        Thread.Sleep(2);
+                    }
                 }
-            }
 
-            _Macro = SwitchState;
+                _Macro = SwitchState;
+            });
         }
 
         private void RunKB()
