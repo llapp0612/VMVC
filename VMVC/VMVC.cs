@@ -14,6 +14,10 @@ using System.Security.Permissions;
 using System.Timers;
 using System.Windows.Input;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
+using System.IO;
+using System.Reflection;
 
 namespace VMVC
 {
@@ -45,6 +49,9 @@ namespace VMVC
         public static bool _KEYSEND = false, _Macro = false, _caps = false, _add = false;
         public TimeSpan grt;
         public static double ic = 0.000;
+
+        PrivateFontCollection pfc, pfc2;
+        public static string _FSC = "VMVC.Resources.Fonts.";
 
         public static int ButtonState
         {
@@ -121,21 +128,21 @@ namespace VMVC
             switch(state)
             {
                 case "Normal":
-                    ButtonColor(0, 60, 198, 73, 0, 0, 0);
-                    ButtonColor(1, 74, 74, 74, 255, 255, 255);
-                    ButtonColor(2, 74, 74, 74, 255, 255, 255);
+                    ButtonColor(0, 60, 198, 73, 30, 30, 30);
+                    ButtonColor(1, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(2, 74, 74, 74, 205, 205, 205);
                     ButtonState = 0;
                     break;
                 case "Ra":
-                    ButtonColor(0, 74, 74, 74, 255, 255, 255);
-                    ButtonColor(1, 60, 198, 73, 0, 0, 0);
-                    ButtonColor(2, 74, 74, 74, 255, 255, 255);
+                    ButtonColor(0, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(1, 60, 198, 73, 30, 30, 30);
+                    ButtonColor(2, 74, 74, 74, 205, 205, 205);
                     ButtonState = 1;
                     break;
                 case "Megafon":
-                    ButtonColor(0, 74, 74, 74, 255, 255, 255);
-                    ButtonColor(1, 74, 74, 74, 255, 255, 255);
-                    ButtonColor(2, 60, 198, 73, 0, 0, 0);
+                    ButtonColor(0, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(1, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(2, 60, 198, 73, 30, 30, 30);
                     ButtonState = 2;
                     break;
                 default:
@@ -173,6 +180,7 @@ namespace VMVC
             {
                 //MessageBox.Show("GTA5 is not running!");
             }
+            //Application.SetCompatibleTextRenderingDefault(true);
 
         }
 
@@ -227,6 +235,7 @@ namespace VMVC
 
             Environment.Exit(0);
             this.Close();
+            GC.SuppressFinalize(this);
         }
 
         private void RestoreWindowPosition()
@@ -260,6 +269,9 @@ namespace VMVC
 
         public void CreateButtons()
         {
+            LoadFont();
+            LoadFont2();
+
             TextField();
             TextField2();
             CreateSwitch();
@@ -267,14 +279,14 @@ namespace VMVC
             TrackBar();
 
             Button(0, normal, 31, 31, normal_Click);
-            Button(1, ra, 31, 73, ra_Click);
-            Button(2, megafon, 31, 115, mega_Click);
-            Button(3, overlay, 31, 157, OverlayB_Click);
+            Button(1, ra, 31, 63, ra_Click);
+            Button(2, megafon, 31, 95, mega_Click);
+            Button(3, overlay, 31, 127, OverlayB_Click);
 
             Label(0, 30, 30);
-            Label(1, 30, 72);
-            Label(2, 30, 114);
-            Label(3, 30, 156);
+            Label(1, 30, 62);
+            Label(2, 30, 94);
+            Label(3, 30, 126);
 
             Buttons[3].Enabled = false;
         }
@@ -285,7 +297,7 @@ namespace VMVC
             {
                 BtLabels[i] = new Label
                 {
-                    Size = new Size(150, 40),
+                    Size = new Size(150, 30),
                     Location = new Point(LocationX, LocationY),
                     Font = new Font(V1, 12),
                     BackColor = Color.FromArgb(100, 100, 100),
@@ -307,17 +319,19 @@ namespace VMVC
             {
                 Buttons[i] = new Button
                 {
-                    Size = new Size(148, 38),
+                    Size = new Size(148, 28),
                     Location = new Point(LocationX, LocationY),
                     Text = Name,
-                    Font = new Font(V1, 12),
+                    Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular),//Font(V1, 12),
+                    TextAlign = ContentAlignment.BottomCenter,
                     BackColor = Color.FromArgb(74, 74, 74),
                     FlatStyle = FlatStyle.Flat
                 };
                 Buttons[i].FlatAppearance.BorderSize = 0;
                 Buttons[i].TabStop = true;
-                Buttons[i].ForeColor = Color.FromArgb(255, 255, 255);
-                Buttons[i].FlatAppearance.CheckedBackColor = Color.FromArgb(0, 0, 0);
+                Buttons[i].ForeColor = Color.FromArgb(205, 205, 205);
+                Buttons[i].FlatAppearance.CheckedBackColor = Color.FromArgb(20, 20, 20);
+                Buttons[i].UseCompatibleTextRendering = true;
                 this.Controls.Add(Buttons[i]);
                 Buttons[i].Click += new EventHandler(Click);
             }
@@ -325,6 +339,34 @@ namespace VMVC
             {
                 MessageBox.Show(Ex.Message);
             }
+        }
+
+        public void LoadFont()
+        {
+            string resource = _FSC + "NoLicense_R-2014.ttf";
+            pfc = new PrivateFontCollection();
+            Stream fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            System.IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
+            byte[] fontdata = new byte[fontStream.Length];
+            fontStream.Read(fontdata, 0, (int)fontStream.Length);
+            Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
+            pfc.AddMemoryFont(data, (int)fontStream.Length);
+            fontStream.Close();
+            Marshal.FreeCoTaskMem(data);
+        }
+
+        public void LoadFont2()
+        {
+            string resource = _FSC + "techno_hideo.ttf";
+            pfc2 = new PrivateFontCollection();
+            Stream fontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            System.IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
+            byte[] fontdata = new byte[fontStream.Length];
+            fontStream.Read(fontdata, 0, (int)fontStream.Length);
+            Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
+            pfc2.AddMemoryFont(data, (int)fontStream.Length);
+            fontStream.Close();
+            Marshal.FreeCoTaskMem(data);
         }
 
         public void TBLBS_Click(object sender, EventArgs e)
@@ -341,12 +383,13 @@ namespace VMVC
             TBLB1.Size = new Size(150, 30);
             TBLB1.Location = new Point(32, 214);
             TBLB1.BackColor = Color.FromArgb(74, 74, 74);
-            TBLB1.ForeColor = Color.FromArgb(255, 255, 255);
-            TBLB1.Font = new Font("Segoe UI", 9.2f);
+            TBLB1.ForeColor = Color.FromArgb(205, 205, 205);
+            TBLB1.Font = new Font(pfc.Families[0], 9f, FontStyle.Regular);
             TBLB1.TextAlign = ContentAlignment.MiddleCenter;
             TBLB1.Width = 146;
             TBLB1.Height = 23;
-            TBLB1.Text = "Keyboard not Hooked";
+            TBLB1.Text = "Keyboard Off";
+            TBLB1.UseCompatibleTextRendering = true;
             TBLB1.Click += TBLBS_Click;
             this.Controls.Add(TBLB1);
 
@@ -374,19 +417,21 @@ namespace VMVC
                 TBLB3.Text = "00:00:00";
             }
         }
-        
+
         public void TextField2()
         {
             TBLB3 = new Label();
             TBLB3.Size = new Size(150, 30);
             TBLB3.Location = new Point(32, 242);
             TBLB3.BackColor = Color.FromArgb(74, 74, 74);
-            TBLB3.ForeColor = Color.FromArgb(255, 255, 255);
-            TBLB3.Font = new Font("Segoe UI", 9.2f);
+            TBLB3.ForeColor = Color.FromArgb(205, 205, 205);
+            TBLB3.Font = new Font(pfc.Families[0], 10.2f, FontStyle.Regular);
             TBLB3.TextAlign = ContentAlignment.MiddleCenter;
+            TBLB3.TextAlign = ContentAlignment.TopCenter;
             TBLB3.Width = 146;
             TBLB3.Height = 23;
             TBLB3.Text = "00:00:00";
+            TBLB3.UseCompatibleTextRendering = true;
             TBLB3.Click += TBLB3_Click;
             this.Controls.Add(TBLB3);
 
@@ -407,11 +452,11 @@ namespace VMVC
         public void CreateSwitch()
         {
             SLB8 = new Label();
-            SLB8.BackColor = Color.FromArgb(50, 50, 50);
+            SLB8.BackColor = Color.FromArgb(40, 40, 40);
             SLB8.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB8.Name = "SwitchButtonStripe1";
             SLB8.Font = new Font("Segoe UI", 0.5f);
-            SLB8.Width = 55;
+            SLB8.Width = 54;
             SLB8.Height = 1;
             SLB8.Location = new Point(42, 275);
             SLB8.TabStop = false;
@@ -420,11 +465,11 @@ namespace VMVC
             this.Controls.Add(SLB8);
 
             SLB7 = new Label();
-            SLB7.BackColor = Color.FromArgb(50, 50, 50);
+            SLB7.BackColor = Color.FromArgb(40, 40, 40);
             SLB7.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB7.Name = "SwitchButtonStripe2";
             SLB7.Font = new Font("Segoe UI", 0.5f);
-            SLB7.Width = 55;
+            SLB7.Width = 54;
             SLB7.Height = 1;
             SLB7.Location = new Point(42, 278);
             SLB7.TabStop = false;
@@ -433,11 +478,11 @@ namespace VMVC
             this.Controls.Add(SLB7);
 
             SLB6 = new Label();
-            SLB6.BackColor = Color.FromArgb(50, 50, 50);
+            SLB6.BackColor = Color.FromArgb(40, 40, 40);
             SLB6.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB6.Name = "SwitchButtonStripe2";
             SLB6.Font = new Font("Segoe UI", 0.5f);
-            SLB6.Width = 55;
+            SLB6.Width = 54;
             SLB6.Height = 1;
             SLB6.Location = new Point(42, 281);
             SLB6.TabStop = false;
@@ -450,7 +495,7 @@ namespace VMVC
             SLB5.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB5.Name = "SwitchButton";
             SLB5.Font = new Font("Segoe UI", 9); //10
-            SLB5.Width = 74;
+            SLB5.Width = 73;
             SLB5.Height = 18;
             SLB5.Location = new Point(32, 270);
             SLB5.TabStop = false;
@@ -463,7 +508,7 @@ namespace VMVC
             SLB4.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB4.Name = "SwitchButtonSideFrame";
             SLB4.Font = new Font("Segoe UI", 10);
-            SLB4.Width = 76;
+            SLB4.Width = 75;
             SLB4.Height = 18;
             SLB4.Location = new Point(31, 270);
             SLB4.TabStop = false;
@@ -475,12 +520,13 @@ namespace VMVC
             SLB3.Visible = true;
             SLB3.Location = new Point(32, 270);
             SLB3.BackColor = Color.FromArgb(60, 198, 73);
-            SLB3.Font = new Font("Segoe UI", 9.5f);
+            SLB3.ForeColor = Color.FromArgb(20, 20, 20);
+            SLB3.Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular);
             SLB3.Text = "ON";
-            SLB3.TextAlign = ContentAlignment.MiddleCenter;
-            SLB3.TextAlign = ContentAlignment.TopCenter;
+            SLB3.TextAlign = ContentAlignment.BottomCenter;
             SLB3.Width = 74;
             SLB3.Height = 18;
+            SLB3.UseCompatibleTextRendering = true;
             SLB3.Click += TBLBS_Click;
             this.Controls.Add(SLB3);
 
@@ -488,12 +534,13 @@ namespace VMVC
             SLB2.Visible = true;
             SLB2.Location = new Point(104, 270);
             SLB2.BackColor = Color.FromArgb(198, 60, 60);
-            SLB2.Font = new Font("Segoe UI", 9.5f);
+            SLB2.ForeColor = Color.FromArgb(20, 20, 20);
+            SLB2.Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular);
             SLB2.Text = "OFF";
-            SLB2.TextAlign = ContentAlignment.MiddleCenter;
-            SLB2.TextAlign = ContentAlignment.TopCenter;
+            SLB2.TextAlign = ContentAlignment.BottomCenter;
             SLB2.Width = 74;
             SLB2.Height = 18;
+            SLB2.UseCompatibleTextRendering = true;
             SLB2.Click += TBLBS_Click;
             this.Controls.Add(SLB2);
 
@@ -521,11 +568,11 @@ namespace VMVC
         public void CreateSwitch2()
         {
             SLB16 = new Label();
-            SLB16.BackColor = Color.FromArgb(50, 50, 50);
+            SLB16.BackColor = Color.FromArgb(40, 40, 40);
             SLB16.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB16.Name = "SwitchButtonStripe1";
             SLB16.Font = new Font("Segoe UI", 0.5f);
-            SLB16.Width = 55;
+            SLB16.Width = 54;
             SLB16.Height = 1;
             SLB16.Location = new Point(42, 297);
             SLB16.TabStop = false;
@@ -534,11 +581,11 @@ namespace VMVC
             this.Controls.Add(SLB16);
 
             SLB15 = new Label();
-            SLB15.BackColor = Color.FromArgb(50, 50, 50);
+            SLB15.BackColor = Color.FromArgb(40, 40, 40);
             SLB15.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB15.Name = "SwitchButtonStripe2";
             SLB15.Font = new Font("Segoe UI", 0.5f);
-            SLB15.Width = 55;
+            SLB15.Width = 54;
             SLB15.Height = 1;
             SLB15.Location = new Point(42, 300);
             SLB15.TabStop = false;
@@ -547,11 +594,11 @@ namespace VMVC
             this.Controls.Add(SLB15);
 
             SLB14 = new Label();
-            SLB14.BackColor = Color.FromArgb(50, 50, 50);
+            SLB14.BackColor = Color.FromArgb(40, 40, 40);
             SLB14.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB14.Name = "SwitchButtonStripe2";
             SLB14.Font = new Font("Segoe UI", 0.5f);
-            SLB14.Width = 55;
+            SLB14.Width = 54;
             SLB14.Height = 1;
             SLB14.Location = new Point(42, 303);
             SLB14.TabStop = false;
@@ -564,7 +611,7 @@ namespace VMVC
             SLB13.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB13.Name = "SwitchButton";
             SLB13.Font = new Font("Segoe UI", 9);
-            SLB13.Width = 74;
+            SLB13.Width = 73;
             SLB13.Height = 18;
             SLB13.Location = new Point(32, 292);
             SLB13.TabStop = false;
@@ -578,7 +625,7 @@ namespace VMVC
             SLB12.Cursor = System.Windows.Forms.Cursors.Arrow;
             SLB12.Name = "SwitchButtonSideFrame";
             SLB12.Font = new Font("Segoe UI", 10);
-            SLB12.Width = 76;
+            SLB12.Width = 75;
             SLB12.Height = 18;
             SLB12.Location = new Point(31, 292);
             SLB12.TabStop = false;
@@ -590,12 +637,13 @@ namespace VMVC
             SLB11.Visible = true;
             SLB11.Location = new Point(32, 292);
             SLB11.BackColor = Color.FromArgb(60, 198, 73);
-            SLB11.Font = new Font("Segoe UI", 9.5f);
+            SLB11.ForeColor = Color.FromArgb(20, 20, 20);
+            SLB11.Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular);
             SLB11.Text = "ON";
-            SLB11.TextAlign = ContentAlignment.MiddleCenter;
-            SLB11.TextAlign = ContentAlignment.TopCenter;
+            SLB11.TextAlign = ContentAlignment.BottomCenter;
             SLB11.Width = 74;
             SLB11.Height = 18;
+            SLB11.UseCompatibleTextRendering = true;
             SLB11.Click += TBLBS_Click2;
             this.Controls.Add(SLB11);
 
@@ -603,12 +651,13 @@ namespace VMVC
             SLB10.Visible = true;
             SLB10.Location = new Point(104, 292);
             SLB10.BackColor = Color.FromArgb(198, 60, 60);
-            SLB10.Font = new Font("Segoe UI", 9.5f);
+            SLB10.ForeColor = Color.FromArgb(20, 20, 20);
+            SLB10.Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular);
             SLB10.Text = "OFF";
-            SLB10.TextAlign = ContentAlignment.MiddleCenter;
-            SLB10.TextAlign = ContentAlignment.TopCenter;
+            SLB10.TextAlign = ContentAlignment.BottomCenter;
             SLB10.Width = 74;
             SLB10.Height = 18;
+            SLB10.UseCompatibleTextRendering = true;
             SLB10.Click += TBLBS_Click2;
             this.Controls.Add(SLB10);
 
@@ -633,7 +682,7 @@ namespace VMVC
             {
                 if (SwitchState)
                 {
-                    while (swi < 73)
+                    while (swi < 74)
                     {
                         SLB4.Location = new Point(31 + swi, 270);
                         SLB5.Location = new Point(32 + swi, 270);
@@ -666,7 +715,7 @@ namespace VMVC
             {
                 if (SwitchState)
                 {
-                    while (swi2 < 73)
+                    while (swi2 < 74)
                     {
                         SLB12.Location = new Point(31 + swi2, 292);
                         SLB13.Location = new Point(32 + swi2, 292);
@@ -843,12 +892,12 @@ namespace VMVC
 
         public void DetectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            using (var gta = Process.GetProcessesByName("GTA5").FirstOrDefault())
+            using (var gta = Process.GetProcessesByName("Notepad").FirstOrDefault())
             {
                 if (gta != null)
                 {
                     grt = DateTime.Now - gta.StartTime;
-                    if (TBLB1.Text != "Keyboard Hooked")
+                    if (TBLB1.Text != "Keyboard On")
                     {
                         if (this.trackBar1.Value == 0)
                         {
@@ -861,7 +910,7 @@ namespace VMVC
                 }
                 else
                 {
-                    if (TBLB1.Text != "Keyboard not Hooked")
+                    if (TBLB1.Text != "Keyboard Off")
                     {
                         if (this.trackBar1.Value == 1)
                         {
@@ -890,7 +939,7 @@ namespace VMVC
             });
 
             TH.Resume();
-            TBLB1.Text = "Keyboard Hooked";
+            TBLB1.Text = "Keyboard On";
         }
 
         private void TurnOff()
@@ -904,7 +953,7 @@ namespace VMVC
             Buttons[3].Enabled = false;
             TH.Suspend();
             this.trackBar1.Value = 0;
-            TBLB1.Text = "Keyboard not Hooked";
+            TBLB1.Text = "Keyboard Off";
         }
 
         private void SetOnTop()
@@ -1045,4 +1094,3 @@ namespace VMVC
         }
     }
 }
-

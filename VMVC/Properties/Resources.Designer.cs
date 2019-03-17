@@ -59,5 +59,14 @@ namespace VMVC.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die TRANA___.TTF ähnelt.
+        /// </summary>
+        internal static string TRANA___ {
+            get {
+                return ResourceManager.GetString("TRANA___", resourceCulture);
+            }
+        }
     }
 }
