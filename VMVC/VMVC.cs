@@ -53,6 +53,10 @@ namespace VMVC
         PrivateFontCollection pfc, pfc2;
         public static string _FSC = "VMVC.Resources.Fonts.";
 
+        public static Bitmap _Button_Green = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button_green.png"));
+        public static Bitmap _Button_Gray = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button.png"));
+        public static Bitmap _Button_Orange = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button_orange.png"));
+
         public static int ButtonState
         {
             get { return _ButtonState; }
@@ -125,24 +129,36 @@ namespace VMVC
 
         private static void State(string state)
         {
-            switch(state)
+            switch (state)
             {
                 case "Normal":
-                    ButtonColor(0, 60, 198, 73, 30, 30, 30);
+                    Buttons[0].BackgroundImage = (Image)_Button_Green;
+                    Buttons[1].BackgroundImage = (Image)_Button_Gray;
+                    Buttons[2].BackgroundImage = (Image)_Button_Gray;
+
+                    /*ButtonColor(0, 60, 198, 73, 30, 30, 30);
                     ButtonColor(1, 74, 74, 74, 205, 205, 205);
-                    ButtonColor(2, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(2, 74, 74, 74, 205, 205, 205);*/
                     ButtonState = 0;
                     break;
                 case "Ra":
-                    ButtonColor(0, 74, 74, 74, 205, 205, 205);
+                    Buttons[0].BackgroundImage = (Image)_Button_Gray;
+                    Buttons[1].BackgroundImage = (Image)_Button_Green;
+                    Buttons[2].BackgroundImage = (Image)_Button_Gray;
+
+                    /*ButtonColor(0, 74, 74, 74, 205, 205, 205);
                     ButtonColor(1, 60, 198, 73, 30, 30, 30);
-                    ButtonColor(2, 74, 74, 74, 205, 205, 205);
+                    ButtonColor(2, 74, 74, 74, 205, 205, 205);*/
                     ButtonState = 1;
                     break;
                 case "Megafon":
-                    ButtonColor(0, 74, 74, 74, 205, 205, 205);
+                    Buttons[0].BackgroundImage = (Image)_Button_Gray;
+                    Buttons[1].BackgroundImage = (Image)_Button_Gray;
+                    Buttons[2].BackgroundImage = (Image)_Button_Green;
+
+                    /*ButtonColor(0, 74, 74, 74, 205, 205, 205);
                     ButtonColor(1, 74, 74, 74, 205, 205, 205);
-                    ButtonColor(2, 60, 198, 73, 30, 30, 30);
+                    ButtonColor(2, 60, 198, 73, 30, 30, 30);*/
                     ButtonState = 2;
                     break;
                 default:
@@ -154,12 +170,15 @@ namespace VMVC
         {
             if (Convert.ToBoolean(value))
             {
-                ButtonColor(3, 240, 130, 33, 0, 0, 0);
+                Buttons[3].BackgroundImage = (Image)_Button_Orange;
+
+                //ButtonColor(3, 240, 130, 33, 0, 0, 0);
                 overlayIsActivated = 0;
             }
             else
             {
-                ButtonColor(3, 74, 74, 74, 255, 255, 255);
+                Buttons[3].BackgroundImage = (Image)_Button_Gray;
+                //ButtonColor(3, 74, 74, 74, 255, 255, 255);
                 overlayIsActivated = 1;
             }
         }
@@ -327,6 +346,7 @@ namespace VMVC
                     BackColor = Color.FromArgb(74, 74, 74),
                     FlatStyle = FlatStyle.Flat
                 };
+                Buttons[i].BackgroundImage = Image.FromFile(@"B:\OBS\Img\button.png");
                 Buttons[i].FlatAppearance.BorderSize = 0;
                 Buttons[i].TabStop = true;
                 Buttons[i].ForeColor = Color.FromArgb(205, 205, 205);
@@ -690,7 +710,7 @@ namespace VMVC
                         SLB7.Location = new Point(42 + swi, 278);
                         SLB8.Location = new Point(42 + swi, 281);
                         swi++;
-                        Thread.Sleep(2);
+                        Thread.Sleep(1);
                     }
                 }
                 else
@@ -703,7 +723,7 @@ namespace VMVC
                         SLB7.Location = new Point(42 + swi, 278);
                         SLB8.Location = new Point(42 + swi, 281);
                         swi--;
-                        Thread.Sleep(2);
+                        Thread.Sleep(1);
                     }
                 }
             });
@@ -723,7 +743,7 @@ namespace VMVC
                         SLB15.Location = new Point(42 + swi2, 300);
                         SLB16.Location = new Point(42 + swi2, 303);
                         swi2++;
-                        Thread.Sleep(2);
+                        Thread.Sleep(1);
                     }
                 }
                 else
@@ -736,7 +756,7 @@ namespace VMVC
                         SLB15.Location = new Point(42 + swi2, 300);
                         SLB16.Location = new Point(42 + swi2, 303);
                         swi2--;
-                        Thread.Sleep(2);
+                        Thread.Sleep(1);
                     }
                 }
 

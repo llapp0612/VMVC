@@ -54,6 +54,9 @@
     <ApplicationIcon>Logo-Llapp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio, Version=1.8.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
@@ -84,6 +87,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MicWave.cs_old">
+      <SubType>Form</SubType>
+    </None>
     <Compile Include="Overlay3.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +174,9 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
     <Content Include="Logo-Llapp.ico" />
+    <EmbeddedResource Include="Resources\Buttons\button.png" />
+    <EmbeddedResource Include="Resources\Buttons\button_green.png" />
+    <EmbeddedResource Include="Resources\Buttons\button_orange.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
