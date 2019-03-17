@@ -106,7 +106,7 @@ namespace VMVC
             int initialStyle = GetWindowLong(this.Handle, -20);
             SetWindowLong(this.Handle, -20, initialStyle | 0x80000 | 0x20);
             var scrnx = (Screen.PrimaryScreen.WorkingArea.Width / 2) - (this.Width / 2);
-            var scrny = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Width);
+            var scrny = (Screen.PrimaryScreen.WorkingArea.Height / 2) - (this.Width + 100);
             SetWindowPos(this.Handle, HWND_TOPMOST, scrnx, scrny, 0, 0, 0);
 
             SetRegion(180, 50);
