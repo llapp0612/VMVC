@@ -130,5 +130,41 @@ namespace VMVC.Properties {
                 this["State"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MicHasSetDefaults {
+            get {
+                return ((bool)(this["MicHasSetDefaults"]));
+            }
+            set {
+                this["MicHasSetDefaults"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Mic {
+            get {
+                return ((int)(this["Mic"]));
+            }
+            set {
+                this["Mic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Speaker {
+            get {
+                return ((int)(this["Speaker"]));
+            }
+            set {
+                this["Speaker"] = value;
+            }
+        }
     }
 }

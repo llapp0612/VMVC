@@ -5,24 +5,25 @@ using System.Windows.Forms;
 using VMVC.Properties;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
 using System.Threading;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Linq;
-using System.Security.Permissions;
 using System.Timers;
 using System.Windows.Input;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.IO;
 using System.Reflection;
+using NAudio.CoreAudioApi;
+
 
 namespace VMVC
 {
     public partial class VMVC : Form
     {
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
+
         private const string V = "VMVC.exe", V1 = "Segoe UI";
         private static string normal = "Normal", ra = "Ra", megafon = "Megafon", overlay = "Overlay";
         public static Button[] Buttons = new Button[4];
@@ -35,6 +36,9 @@ namespace VMVC
 
         public static Label TBLB1, TBLB2, TBLB3, TBLB4;
         public static Label SLB1, SLB2, SLB3, SLB4, SLB5, SLB6, SLB7, SLB8, SLB9, SLB10, SLB11, SLB12, SLB13, SLB14, SLB15, SLB16;
+        public static Label uStat1, uStat2, uStat3, uStat4, rStat1, rStat2, rStat3, rStat4, uStat1B;
+        public static Label BGspeaker, BGspeaker1, speakerBar, speakerBarH;
+        public static Label BGmic, BGmic1, micBar, micBarH;
 
         Process[] processes;
 
@@ -56,6 +60,19 @@ namespace VMVC
         public static Bitmap _Button_Green = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button_green.png"));
         public static Bitmap _Button_Gray = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button.png"));
         public static Bitmap _Button_Orange = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.button_orange.png"));
+        public static Bitmap _Frame = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.frame.png"));
+        public static Bitmap _Switch_On = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.switch_on.png"));
+        public static Bitmap _Switch_Off = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.switch_off.png"));
+        public static Bitmap _Switch = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Buttons.switch.png"));
+        public static Bitmap _Bar = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Bars.bar.png"));
+        public static Bitmap _Stat = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().GetManifestResourceStream("VMVC.Resources.Bars.stat.png"));
+
+        public static Point _Location;
+
+        public static object[] TransmittedObject = null;
+
+        PerformanceCounter cpuCounter;
+        PerformanceCounter ramCounter;
 
         public static int ButtonState
         {
@@ -108,8 +125,10 @@ namespace VMVC
             this.FormClosing += Form1_Closing;
             MaximizeBox = false;
             MinimizeBox = false;
+            _Location = this.Location;
             GC.Collect();
             //Process.GetCurrentProcess().ProcessorAffinity = (System.IntPtr)12;
+            
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
         }
 
@@ -123,6 +142,10 @@ namespace VMVC
                 {
                     string[] words = Regex.Split(process.MainWindowTitle, "VoiceMeeter");
                     State(words[1]);
+                    for(int i = 0; i <= 3; i++)
+                    {
+                        Buttons[i].Enabled = true;
+                    }
                 }
             }
         }
@@ -186,7 +209,7 @@ namespace VMVC
         public void Form1_Load(object sender, EventArgs e)
         {
             this.RestoreWindowPosition();
-            this.CreateButtons();
+            this.CreateInterface();
             StartListener();
             CheckCantabile();
             try
@@ -200,7 +223,6 @@ namespace VMVC
                 //MessageBox.Show("GTA5 is not running!");
             }
             //Application.SetCompatibleTextRenderingDefault(true);
-
         }
 
         public void GameOverlays()
@@ -286,7 +308,7 @@ namespace VMVC
             Settings.Default.Save();
         }
 
-        public void CreateButtons()
+        public void CreateInterface()
         {
             LoadFont();
             LoadFont2();
@@ -306,6 +328,13 @@ namespace VMVC
             Label(1, 30, 62);
             Label(2, 30, 94);
             Label(3, 30, 126);
+
+            Usage_Stats();
+
+            SpeakerBar();
+            MicBar();
+            PeakTick();
+            UpdateStatBarsTick();
 
             Buttons[3].Enabled = false;
         }
@@ -344,7 +373,8 @@ namespace VMVC
                     Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular),//Font(V1, 12),
                     TextAlign = ContentAlignment.BottomCenter,
                     BackColor = Color.FromArgb(74, 74, 74),
-                    FlatStyle = FlatStyle.Flat
+                    FlatStyle = FlatStyle.Flat,
+                    Enabled = false
                 };
                 Buttons[i].BackgroundImage = Image.FromFile(@"B:\OBS\Img\button.png");
                 Buttons[i].FlatAppearance.BorderSize = 0;
@@ -389,6 +419,278 @@ namespace VMVC
             Marshal.FreeCoTaskMem(data);
         }
 
+        public object getCPUCounter()
+        {
+            cpuCounter = new PerformanceCounter();
+            cpuCounter.CategoryName = "Processor";
+            cpuCounter.CounterName = "% Processor Time";
+            cpuCounter.InstanceName = "_Total";
+
+            float firstValue = cpuCounter.NextValue();
+            Thread.Sleep(1000);
+            float secondValue = cpuCounter.NextValue();
+            cpuCounter.Close();
+            uStat4.Text = (Math.Round(secondValue)) + "%";
+            int output = (int)Math.Round(secondValue * (double)1.3);
+
+            return output;
+        }
+
+        public object getRAMCounter()
+        {
+            ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+            dynamic firstValue = ramCounter.NextValue();
+            Thread.Sleep(1000);
+            dynamic secondValue = ramCounter.NextValue();
+            ramCounter.Close();
+
+            long memoryKb;
+            GetPhysicallyInstalledSystemMemory(out memoryKb);
+            long FullMemmory = memoryKb / 1024;
+
+            var ret = Math.Round((FullMemmory - secondValue) / (FullMemmory / 100));
+            rStat4.Text = ret + "%";
+            int output = (int)Math.Round(ret * (double)1.3);
+
+            return output;
+        }
+
+        public void SoundSettings(object sender, EventArgs e)
+        {
+            AsyncSoundSettings();
+        }
+
+        private async void AsyncSoundSettings()
+        {
+            await Task.Run(() =>
+            {
+                AudioDevices dev = new AudioDevices();
+                dev.StartPosition = FormStartPosition.Manual;
+                dev.Left = this.Location.X + ((this.Width / 2) - (dev.Width / 2));
+                dev.Top = this.Location.Y + ((dev.Height / 2) + (dev.Height / 2));
+                dev.ShowDialog();
+            });
+        }
+
+        public void PeakBar(object sender, EventArgs e)
+        {
+            if(Settings.Default.Mic > 0)
+            {
+                if(TransmittedObject == null)
+                {
+                    TransmittedObject = AudioDevices.GetDevices();
+                }
+
+                if (TransmittedObject != null)
+                {
+                    var device = (MMDevice)TransmittedObject[Settings.Default.Speaker];
+                    var peakValue = device.AudioMeterInformation.MasterPeakValue;
+                    int _Peak = (int)(Math.Round(peakValue * 279));
+                    int _Col = (int)(Math.Round(peakValue * 211));
+                    speakerBar.BackColor = Color.FromArgb(44 + _Col, 214 - _Col, 44);
+                    speakerBarH.Size = new Size(8, 277 - _Peak);
+
+                    device = (MMDevice)TransmittedObject[Settings.Default.Mic];
+                    peakValue = device.AudioMeterInformation.MasterPeakValue;
+                    _Peak = (int)(Math.Round(peakValue * 279));
+                    _Col = (int)(Math.Round(peakValue * 211));
+                    micBar.BackColor = Color.FromArgb(44 + _Col, 214 - _Col, 44);
+                    micBarH.Size = new Size(8, 277 - _Peak);
+
+                }
+            }
+        }
+
+        private void PeakTick()
+        {
+            int _counter = 0;
+            System.Timers.Timer timer;
+            timer = new System.Timers.Timer();
+            timer.Interval = 20;
+            timer.Elapsed += PeakBar;
+            timer.Start();
+        }
+
+        private void UpdateStatBarsTick()
+        {
+            int _counter = 0;
+            System.Timers.Timer timer;
+            timer = new System.Timers.Timer();
+            timer.Interval = 1100;
+            timer.Elapsed += UpdateStatBars;
+            timer.Start();
+        }
+
+        private async void UpdateStatBars(object sender, EventArgs e)
+        {
+            uStat2.Size = new Size(Convert.ToInt32(Convert.ToDouble(await Task.Run(() => getCPUCounter()))), 3);
+            rStat2.Size = new Size(Convert.ToInt32(Convert.ToDouble(await Task.Run(() => getRAMCounter()))), 3);
+        }
+
+        private void SpeakerBar()
+        {
+            speakerBarH = new Label();
+            speakerBarH.Size = new Size(8, 277);
+            speakerBarH.BackColor = Color.FromArgb(20, 20, 20);
+            speakerBarH.Location = new Point(19, 32);
+            this.Controls.Add(speakerBarH);
+
+            speakerBar = new Label();
+            speakerBar.Size = new Size(8, 277);
+            speakerBar.BackColor = Color.FromArgb(120, 120, 120);
+            speakerBar.Location = new Point(19, 32);
+            this.Controls.Add(speakerBar);
+
+            BGspeaker1 = new Label();
+            BGspeaker1.Size = new Size(10, 279);
+            BGspeaker1.BackColor = Color.FromArgb(20, 20, 20);
+            BGspeaker1.Location = new Point(18, 31);
+            this.Controls.Add(BGspeaker1);
+
+            Label BGspeaker = new Label();
+            BGspeaker.Size = new Size(12, 281);
+            BGspeaker.BackColor = Color.FromArgb(74, 74, 74);
+            BGspeaker.Location = new Point(17, 30);
+            this.Controls.Add(BGspeaker);
+        }
+
+        private void MicBar()
+        {
+            
+            micBarH = new Label();
+            micBarH.Size = new Size(8, 277);
+            micBarH.BackColor = Color.FromArgb(20, 20, 20);
+            micBarH.Location = new Point(183, 32);
+            this.Controls.Add(micBarH);
+
+            micBar = new Label();
+            micBar.Size = new Size(8, 277);
+            micBar.BackColor = Color.FromArgb(120, 120, 120);
+            micBar.Location = new Point(183, 32);
+            this.Controls.Add(micBar);
+
+            BGmic1 = new Label();
+            BGmic1.Size = new Size(10, 279);
+            BGmic1.BackColor = Color.FromArgb(20, 20, 20);
+            BGmic1.Location = new Point(182, 31);
+            this.Controls.Add(BGmic1);
+
+            BGmic = new Label();
+            BGmic.Size = new Size(12, 281);
+            BGmic.BackColor = Color.FromArgb(74, 74, 74);
+            BGmic.Location = new Point(181, 30);
+            this.Controls.Add(BGmic);
+        }
+
+        void TransparetBackground(Control C)
+        {
+            C.Visible = false;
+
+            C.Refresh();
+            Application.DoEvents();
+
+            Rectangle screenRectangle = RectangleToScreen(this.ClientRectangle);
+            int titleHeight = screenRectangle.Top - this.Top;
+            int Right = screenRectangle.Left - this.Left;
+
+            Bitmap bmp = new Bitmap(this.Width, this.Height);
+            this.DrawToBitmap(bmp, new Rectangle(0, 0, this.Width, this.Height));
+            Bitmap bmpImage = new Bitmap(bmp);
+            bmp = bmpImage.Clone(new Rectangle(C.Location.X + Right, C.Location.Y + titleHeight, C.Width, C.Height), bmpImage.PixelFormat);
+            C.BackgroundImage = bmp;
+
+            C.Visible = true;
+        }
+
+        private void Usage_Stats()
+        {
+            uStat3 = new Label();
+            uStat3.Size = new Size(30, 12);
+            //uStat3.BackColor = Color.Transparent;
+            uStat3.ForeColor = Color.FromArgb(205, 205, 205);
+            uStat3.Location = new Point(39, 165);
+            uStat3.Font = new Font(pfc.Families[0], 7f, FontStyle.Regular);
+            uStat3.TextAlign = ContentAlignment.MiddleCenter;
+            uStat3.UseCompatibleTextRendering = true;
+            uStat3.Text = "CPU";
+            //uStat3.Parent = uStat1B;
+            this.Controls.Add(uStat3);
+            
+            uStat4 = new Label();
+            uStat4.Size = new Size(40, 12);
+            uStat4.BackColor = Color.Transparent;
+            uStat4.ForeColor = Color.FromArgb(205, 205, 205);
+            uStat4.Location = new Point(131, 165);
+            uStat4.Font = new Font(pfc.Families[0], 7f, FontStyle.Regular);
+            uStat4.TextAlign = ContentAlignment.MiddleCenter;
+            uStat4.UseCompatibleTextRendering = true;
+            uStat4.Text = "0%";
+            uStat4.Parent = uStat1B;
+            this.Controls.Add(uStat4);
+            
+            uStat2 = new Label();
+            uStat2.Size = new Size(0, 3);
+            uStat2.BackColor = Color.FromArgb(73, 191, 114);
+            uStat2.Location = new Point(40, 179);
+            this.Controls.Add(uStat2);
+
+            uStat1 = new Label();
+            uStat1.Size = new Size(132, 5);
+            uStat1.BackColor = Color.FromArgb(20, 20, 20);
+            uStat1.Location = new Point(39, 178);
+            uStat1.Parent = uStat3;
+            this.Controls.Add(uStat1);
+
+            rStat3 = new Label();
+            rStat3.Size = new Size(30, 12);
+            rStat3.BackColor = Color.Transparent;
+            rStat3.ForeColor = Color.FromArgb(205, 205, 205);
+            rStat3.Location = new Point(39, 184);
+            rStat3.Font = new Font(pfc.Families[0], 7f, FontStyle.Regular);
+            rStat3.TextAlign = ContentAlignment.MiddleCenter;
+            rStat3.UseCompatibleTextRendering = true;
+            rStat3.Text = "RAM";
+            rStat3.Parent = uStat1B;
+            this.Controls.Add(rStat3);
+
+            rStat4 = new Label();
+            rStat4.Size = new Size(40, 12);
+            rStat4.BackColor = Color.Transparent;
+            rStat4.ForeColor = Color.FromArgb(205, 205, 205);
+            rStat4.Location = new Point(131, 184);
+            rStat4.Font = new Font(pfc.Families[0], 7f, FontStyle.Regular);
+            rStat4.TextAlign = ContentAlignment.MiddleCenter;
+            rStat4.UseCompatibleTextRendering = true;
+            rStat4.Text = "0%";
+            rStat4.Parent = uStat1B;
+            this.Controls.Add(rStat4);
+
+            rStat2 = new Label();
+            rStat2.Size = new Size(0, 3);
+            rStat2.BackColor = Color.FromArgb(73, 191, 114);
+            rStat2.Location = new Point(40, 198);
+            this.Controls.Add(rStat2);
+
+            rStat1 = new Label();
+            rStat1.Size = new Size(132, 5);
+            rStat1.BackColor = Color.FromArgb(20, 20, 20);
+            rStat1.Location = new Point(39, 197);
+            this.Controls.Add(rStat1);
+
+            uStat1B = new Label();
+            uStat1B.Size = new Size(150, 53);
+            uStat1B.BackColor = Color.FromArgb(74, 74, 74);
+            uStat1B.Location = new Point(30, 158);
+            uStat1B.Image = (Image)_Stat;
+            uStat1B.Click += SoundSettings;
+            this.Controls.Add(uStat1B);
+
+            TransparetBackground(uStat3);
+            TransparetBackground(uStat4);
+            TransparetBackground(rStat3);
+            TransparetBackground(rStat4);
+        }
+
         public void TBLBS_Click(object sender, EventArgs e)
         {
             if (!Convert.ToBoolean(this.trackBar1.Value))
@@ -407,8 +709,9 @@ namespace VMVC
             TBLB1.Font = new Font(pfc.Families[0], 9f, FontStyle.Regular);
             TBLB1.TextAlign = ContentAlignment.MiddleCenter;
             TBLB1.Width = 146;
-            TBLB1.Height = 23;
+            TBLB1.Height = 24;
             TBLB1.Text = "Keyboard Off";
+            TBLB1.Image = (Image)_Frame;
             TBLB1.UseCompatibleTextRendering = true;
             TBLB1.Click += TBLBS_Click;
             this.Controls.Add(TBLB1);
@@ -449,8 +752,9 @@ namespace VMVC
             TBLB3.TextAlign = ContentAlignment.MiddleCenter;
             TBLB3.TextAlign = ContentAlignment.TopCenter;
             TBLB3.Width = 146;
-            TBLB3.Height = 23;
+            TBLB3.Height = 24;
             TBLB3.Text = "00:00:00";
+            TBLB3.Image = (Image)_Frame;
             TBLB3.UseCompatibleTextRendering = true;
             TBLB3.Click += TBLB3_Click;
             this.Controls.Add(TBLB3);
@@ -478,7 +782,7 @@ namespace VMVC
             SLB8.Font = new Font("Segoe UI", 0.5f);
             SLB8.Width = 54;
             SLB8.Height = 1;
-            SLB8.Location = new Point(42, 275);
+            SLB8.Location = new Point(42, 276);
             SLB8.TabStop = false;
             SLB8.Click += TBLBS_Click;
             SLB8.BorderStyle = BorderStyle.None;
@@ -491,7 +795,7 @@ namespace VMVC
             SLB7.Font = new Font("Segoe UI", 0.5f);
             SLB7.Width = 54;
             SLB7.Height = 1;
-            SLB7.Location = new Point(42, 278);
+            SLB7.Location = new Point(42, 279);
             SLB7.TabStop = false;
             SLB7.Click += TBLBS_Click;
             SLB7.BorderStyle = BorderStyle.None;
@@ -504,7 +808,7 @@ namespace VMVC
             SLB6.Font = new Font("Segoe UI", 0.5f);
             SLB6.Width = 54;
             SLB6.Height = 1;
-            SLB6.Location = new Point(42, 281);
+            SLB6.Location = new Point(42, 282);
             SLB6.TabStop = false;
             SLB6.Click += TBLBS_Click;
             SLB6.BorderStyle = BorderStyle.None;
@@ -519,6 +823,7 @@ namespace VMVC
             SLB5.Height = 18;
             SLB5.Location = new Point(32, 270);
             SLB5.TabStop = false;
+            SLB5.Image = (Image)_Switch;
             SLB5.BorderStyle = BorderStyle.None;
             SLB5.Click += TBLBS_Click;
             this.Controls.Add(SLB5);
@@ -546,6 +851,7 @@ namespace VMVC
             SLB3.TextAlign = ContentAlignment.BottomCenter;
             SLB3.Width = 74;
             SLB3.Height = 18;
+            SLB3.Image = (Image)_Switch_On;
             SLB3.UseCompatibleTextRendering = true;
             SLB3.Click += TBLBS_Click;
             this.Controls.Add(SLB3);
@@ -560,6 +866,7 @@ namespace VMVC
             SLB2.TextAlign = ContentAlignment.BottomCenter;
             SLB2.Width = 74;
             SLB2.Height = 18;
+            SLB2.Image = (Image)_Switch_Off;
             SLB2.UseCompatibleTextRendering = true;
             SLB2.Click += TBLBS_Click;
             this.Controls.Add(SLB2);
@@ -594,7 +901,7 @@ namespace VMVC
             SLB16.Font = new Font("Segoe UI", 0.5f);
             SLB16.Width = 54;
             SLB16.Height = 1;
-            SLB16.Location = new Point(42, 297);
+            SLB16.Location = new Point(42, 298);
             SLB16.TabStop = false;
             SLB16.BorderStyle = BorderStyle.None;
             SLB16.Click += TBLBS_Click2;
@@ -607,7 +914,7 @@ namespace VMVC
             SLB15.Font = new Font("Segoe UI", 0.5f);
             SLB15.Width = 54;
             SLB15.Height = 1;
-            SLB15.Location = new Point(42, 300);
+            SLB15.Location = new Point(42, 301);
             SLB15.TabStop = false;
             SLB15.BorderStyle = BorderStyle.None;
             SLB15.Click += TBLBS_Click2;
@@ -620,7 +927,7 @@ namespace VMVC
             SLB14.Font = new Font("Segoe UI", 0.5f);
             SLB14.Width = 54;
             SLB14.Height = 1;
-            SLB14.Location = new Point(42, 303);
+            SLB14.Location = new Point(42, 304);
             SLB14.TabStop = false;
             SLB14.BorderStyle = BorderStyle.None;
             SLB14.Click += TBLBS_Click2;
@@ -636,6 +943,7 @@ namespace VMVC
             SLB13.Location = new Point(32, 292);
             SLB13.TabStop = false;
             SLB13.TabIndex = 0;
+            SLB13.Image = (Image)_Switch;
             SLB13.BorderStyle = BorderStyle.None;
             SLB13.Click += TBLBS_Click2;
             this.Controls.Add(SLB13);
@@ -663,6 +971,7 @@ namespace VMVC
             SLB11.TextAlign = ContentAlignment.BottomCenter;
             SLB11.Width = 74;
             SLB11.Height = 18;
+            SLB11.Image = (Image)_Switch_On;
             SLB11.UseCompatibleTextRendering = true;
             SLB11.Click += TBLBS_Click2;
             this.Controls.Add(SLB11);
@@ -677,6 +986,7 @@ namespace VMVC
             SLB10.TextAlign = ContentAlignment.BottomCenter;
             SLB10.Width = 74;
             SLB10.Height = 18;
+            SLB10.Image = (Image)_Switch_Off;
             SLB10.UseCompatibleTextRendering = true;
             SLB10.Click += TBLBS_Click2;
             this.Controls.Add(SLB10);
@@ -706,9 +1016,9 @@ namespace VMVC
                     {
                         SLB4.Location = new Point(31 + swi, 270);
                         SLB5.Location = new Point(32 + swi, 270);
-                        SLB6.Location = new Point(42 + swi, 275);
-                        SLB7.Location = new Point(42 + swi, 278);
-                        SLB8.Location = new Point(42 + swi, 281);
+                        SLB6.Location = new Point(42 + swi, 276);
+                        SLB7.Location = new Point(42 + swi, 279);
+                        SLB8.Location = new Point(42 + swi, 282);
                         swi++;
                         Thread.Sleep(1);
                     }
@@ -739,9 +1049,9 @@ namespace VMVC
                     {
                         SLB12.Location = new Point(31 + swi2, 292);
                         SLB13.Location = new Point(32 + swi2, 292);
-                        SLB14.Location = new Point(42 + swi2, 297);
-                        SLB15.Location = new Point(42 + swi2, 300);
-                        SLB16.Location = new Point(42 + swi2, 303);
+                        SLB14.Location = new Point(42 + swi2, 298);
+                        SLB15.Location = new Point(42 + swi2, 301);
+                        SLB16.Location = new Point(42 + swi2, 304);
                         swi2++;
                         Thread.Sleep(1);
                     }
@@ -752,9 +1062,9 @@ namespace VMVC
                     {
                         SLB12.Location = new Point(31 + swi2, 292);
                         SLB13.Location = new Point(32 + swi2, 292);
-                        SLB14.Location = new Point(42 + swi2, 297);
-                        SLB15.Location = new Point(42 + swi2, 300);
-                        SLB16.Location = new Point(42 + swi2, 303);
+                        SLB14.Location = new Point(42 + swi2, 298);
+                        SLB15.Location = new Point(42 + swi2, 301);
+                        SLB16.Location = new Point(42 + swi2, 304);
                         swi2--;
                         Thread.Sleep(1);
                     }
@@ -910,7 +1220,7 @@ namespace VMVC
             DetectTimer.Start();
         }
 
-        public void DetectTimer_Elapsed(object sender, ElapsedEventArgs e)
+        public async void DetectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             using (var gta = Process.GetProcessesByName("Notepad").FirstOrDefault())
             {
