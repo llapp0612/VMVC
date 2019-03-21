@@ -14,7 +14,6 @@ using System.Drawing.Text;
 using System.IO;
 using System.Reflection;
 using NAudio.CoreAudioApi;
-using System.Windows.Media.Animation;
 
 namespace VMVC
 {
@@ -143,10 +142,6 @@ namespace VMVC
                 {
                     string[] words = Regex.Split(process.MainWindowTitle, "VoiceMeeter");
                     State(words[1]);
-                    /*for(int i = 0; i < 3; i++)
-                    {
-                        Buttons[i].Enabled = true;
-                    }*/
                 }
             }
         }
@@ -232,7 +227,6 @@ namespace VMVC
             {
                 //MessageBox.Show("GTA5 is not running!");
             }
-            //Application.SetCompatibleTextRenderingDefault(true);
         }
 
         public void GameOverlays()
