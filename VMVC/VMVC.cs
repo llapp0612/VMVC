@@ -14,7 +14,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Reflection;
 using NAudio.CoreAudioApi;
-
+using System.Windows.Media.Animation;
 
 namespace VMVC
 {
@@ -73,6 +73,7 @@ namespace VMVC
 
         PerformanceCounter cpuCounter;
         PerformanceCounter ramCounter;
+        System.Timers.Timer PeakTimer, BarTimer;
 
         public static int ButtonState
         {
@@ -142,10 +143,10 @@ namespace VMVC
                 {
                     string[] words = Regex.Split(process.MainWindowTitle, "VoiceMeeter");
                     State(words[1]);
-                    for(int i = 0; i <= 3; i++)
+                    /*for(int i = 0; i < 3; i++)
                     {
                         Buttons[i].Enabled = true;
-                    }
+                    }*/
                 }
             }
         }
@@ -159,6 +160,9 @@ namespace VMVC
                     Buttons[1].BackgroundImage = (Image)_Button_Gray;
                     Buttons[2].BackgroundImage = (Image)_Button_Gray;
 
+                    Buttons[0].Enabled = false;
+                    Buttons[1].Enabled = true;
+                    Buttons[2].Enabled = true;
                     /*ButtonColor(0, 60, 198, 73, 30, 30, 30);
                     ButtonColor(1, 74, 74, 74, 205, 205, 205);
                     ButtonColor(2, 74, 74, 74, 205, 205, 205);*/
@@ -169,6 +173,9 @@ namespace VMVC
                     Buttons[1].BackgroundImage = (Image)_Button_Green;
                     Buttons[2].BackgroundImage = (Image)_Button_Gray;
 
+                    Buttons[0].Enabled = true;
+                    Buttons[1].Enabled = false;
+                    Buttons[2].Enabled = true;
                     /*ButtonColor(0, 74, 74, 74, 205, 205, 205);
                     ButtonColor(1, 60, 198, 73, 30, 30, 30);
                     ButtonColor(2, 74, 74, 74, 205, 205, 205);*/
@@ -179,6 +186,9 @@ namespace VMVC
                     Buttons[1].BackgroundImage = (Image)_Button_Gray;
                     Buttons[2].BackgroundImage = (Image)_Button_Green;
 
+                    Buttons[0].Enabled = true;
+                    Buttons[1].Enabled = true;
+                    Buttons[2].Enabled = false;
                     /*ButtonColor(0, 74, 74, 74, 205, 205, 205);
                     ButtonColor(1, 74, 74, 74, 205, 205, 205);
                     ButtonColor(2, 60, 198, 73, 30, 30, 30);*/
@@ -274,6 +284,12 @@ namespace VMVC
             Overlay2.Close();
             Overlay3.Close();
 
+            cpuCounter.Close();
+            ramCounter.Close();
+
+            PeakTimer.Stop();
+            BarTimer.Stop();
+
             Environment.Exit(0);
             this.Close();
             GC.SuppressFinalize(this);
@@ -347,12 +363,10 @@ namespace VMVC
                 {
                     Size = new Size(150, 30),
                     Location = new Point(LocationX, LocationY),
-                    Font = new Font(V1, 12),
                     BackColor = Color.FromArgb(100, 100, 100),
-                    //FlatStyle = FlatStyle.Flat
                 };
-                BtLabels[i].TabStop = false;
-
+                BtLabels[i].TabStop = true;
+                BtLabels[i].Enabled = false;
                 this.Controls.Add(BtLabels[i]);
             }
             catch (Exception Ex)
@@ -370,16 +384,17 @@ namespace VMVC
                     Size = new Size(148, 28),
                     Location = new Point(LocationX, LocationY),
                     Text = Name,
-                    Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular),//Font(V1, 12),
+                    Font = new Font(pfc2.Families[0], 14f, FontStyle.Regular),
                     TextAlign = ContentAlignment.BottomCenter,
                     BackColor = Color.FromArgb(74, 74, 74),
+                    ForeColor = Color.FromArgb(205, 205, 205),
                     FlatStyle = FlatStyle.Flat,
                     Enabled = false
                 };
-                Buttons[i].BackgroundImage = Image.FromFile(@"B:\OBS\Img\button.png");
+                Buttons[i].BackgroundImage = (Image)_Button_Gray;
                 Buttons[i].FlatAppearance.BorderSize = 0;
-                Buttons[i].TabStop = true;
-                Buttons[i].ForeColor = Color.FromArgb(205, 205, 205);
+                Buttons[i].TabStop = false;
+                Buttons[i].BringToFront();
                 Buttons[i].FlatAppearance.CheckedBackColor = Color.FromArgb(20, 20, 20);
                 Buttons[i].UseCompatibleTextRendering = true;
                 this.Controls.Add(Buttons[i]);
@@ -431,7 +446,7 @@ namespace VMVC
             float secondValue = cpuCounter.NextValue();
             cpuCounter.Close();
             uStat4.Text = (Math.Round(secondValue)) + "%";
-            int output = (int)Math.Round(secondValue * (double)1.3);
+            int output = (int)Math.Round(secondValue * (double)1.3, 1);
 
             return output;
         }
@@ -450,7 +465,7 @@ namespace VMVC
 
             var ret = Math.Round((FullMemmory - secondValue) / (FullMemmory / 100));
             rStat4.Text = ret + "%";
-            int output = (int)Math.Round(ret * (double)1.3);
+            int output = (int)Math.Round(ret * (double)1.3, 1);
 
             return output;
         }
@@ -483,8 +498,9 @@ namespace VMVC
 
                 if (TransmittedObject != null)
                 {
-                    var device = (MMDevice)TransmittedObject[Settings.Default.Speaker];
+                    MMDevice device = (MMDevice)TransmittedObject[Settings.Default.Speaker];
                     var peakValue = device.AudioMeterInformation.MasterPeakValue;
+
                     int _Peak = (int)(Math.Round(peakValue * 279));
                     int _Col = (int)(Math.Round(peakValue * 211));
                     speakerBar.BackColor = Color.FromArgb(44 + _Col, 214 - _Col, 44);
@@ -496,7 +512,6 @@ namespace VMVC
                     _Col = (int)(Math.Round(peakValue * 211));
                     micBar.BackColor = Color.FromArgb(44 + _Col, 214 - _Col, 44);
                     micBarH.Size = new Size(8, 277 - _Peak);
-
                 }
             }
         }
@@ -504,21 +519,19 @@ namespace VMVC
         private void PeakTick()
         {
             int _counter = 0;
-            System.Timers.Timer timer;
-            timer = new System.Timers.Timer();
-            timer.Interval = 20;
-            timer.Elapsed += PeakBar;
-            timer.Start();
+            PeakTimer = new System.Timers.Timer();
+            PeakTimer.Interval = 10;
+            PeakTimer.Elapsed += PeakBar;
+            PeakTimer.Start();
         }
 
         private void UpdateStatBarsTick()
         {
             int _counter = 0;
-            System.Timers.Timer timer;
-            timer = new System.Timers.Timer();
-            timer.Interval = 1100;
-            timer.Elapsed += UpdateStatBars;
-            timer.Start();
+            BarTimer = new System.Timers.Timer();
+            BarTimer.Interval = 1100;
+            BarTimer.Elapsed += UpdateStatBars;
+            BarTimer.Start();
         }
 
         private async void UpdateStatBars(object sender, EventArgs e)
